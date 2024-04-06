@@ -6,6 +6,7 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 import useOutOfModal from "../../hooks/useOutOfModal";
 import "./styles.css";
 import FormatCurrency from "../../utilities/FormatCurrency";
+import ButtonHoverPromptModal from "../../features/shared/ButtonHoverPromptModal";
 
 type HeaderSearchProps = {
   setExpandBurgerMenu: React.Dispatch<React.SetStateAction<boolean>>;
@@ -73,18 +74,15 @@ export default function HeaderSearch({
             ref={modalRef}
             className="flex relative outline-none border-none"
           >
-            <button
-              className={`z-[999] transition-all hover:translate-x-[5%] hover:bg-white hover:shadow-sm hover:shadow-black hover:rounded-full p-[.7rem] top-[.5rem] left-[.5rem] font-medium
-              ${
-                showModal
-                  ? ""
-                  : "hover:before:shadow-sm hover:before:bg-white hover:before:rounded-sm hover:before:shadow-black hover:before:content-['Cart'] hover:before:absolute hover:before:bottom-[-4rem] hover:before:left-[-1.5rem] hover:before:p-[.5rem] hover:before:w-[8rem] hover:before:z-[999]"
-              }
-              `}
+            <ButtonHoverPromptModal
+              className={`p-[.7rem] top-[.5rem] left-[.5rem] font-medium hover:bg-white hover:shadow-black`}
               onClick={() => setShowModal((prev) => !prev)}
+              showModal={showModal}
+              contentName="Cart"
             >
               <ShoppingCart />
-            </button>
+            </ButtonHoverPromptModal>
+
             <div
               ref={modalContainerRef}
               className={`${

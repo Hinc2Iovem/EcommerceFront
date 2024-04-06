@@ -1,11 +1,8 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import BurgerMenu from "../../components/Header/BurgerMenu";
-import HeaderPills from "../../components/Header/HeaderPills";
-import HeaderSearch from "../../components/Header/HeaderSearch";
+import Header from "../../components/Header/Header";
 import { CATEGORIES } from "../../const/PillsCategories";
 import SingleItem from "./SingleItem";
-import Header from "../../components/Header/Header";
 
 export type ProductTypes = {
   category: string;
