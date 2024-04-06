@@ -53,6 +53,8 @@ export default function App() {
                 }
                 path="cart"
               />
+
+              <Route element={} path="/profile/:userId" />
             </Route>
 
             <Route element={<Missing />} path="*" />
