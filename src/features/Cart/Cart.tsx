@@ -1,38 +1,15 @@
 import { useState } from "react";
-import BurgerMenu from "../../components/Header/BurgerMenu";
-import HeaderPills from "../../components/Header/HeaderPills";
-import HeaderSearch from "../../components/Header/HeaderSearch";
+import Header from "../../components/Header/Header";
 import { CATEGORIES } from "../../const/PillsCategories";
 import useCart from "../../hooks/useCart";
 import CartItemPage from "./CartItem";
 
-type CartProps = {
-  setCurrentCategory: React.Dispatch<React.SetStateAction<string>>;
-  currentCategory: string;
-};
-
-export default function Cart({
-  currentCategory,
-  setCurrentCategory,
-}: CartProps) {
-  const [expandBurgerMenu, setExpandBurgerMenu] = useState(false);
+export default function Cart() {
   const { totalItems, totalPrice, cart, dispatch, REDUCER_ACTIONS } = useCart();
-
+  const [currentCategory, setCurrentCategory] = useState(CATEGORIES.All);
   return (
     <section>
-      <header className={`sticky  bg-white w-full top-0 z-[2]`}>
-        <HeaderSearch setExpandBurgerMenu={setExpandBurgerMenu} />
-        <div className="block md:hidden">
-          <HeaderPills
-            setCurrentCategory={setCurrentCategory}
-            currentCategory={currentCategory}
-          />
-        </div>
-      </header>
-      <BurgerMenu
-        setExpandBurgerMenu={setExpandBurgerMenu}
-        expandBurgerMenu={expandBurgerMenu}
-      />
+      <Header chosenCategory={currentCategory} />
 
       <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] grid-rows-[repeat(auto-fit,minmax(30rem,1fr))] p-3 gap-3 bg-neutral-magnolia ">
         <div

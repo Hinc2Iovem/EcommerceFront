@@ -127,7 +127,7 @@ export default function HeaderSearch({
               <div className="flex flex-col gap-3">
                 <Link
                   className="flex gap-3 px-3 py-1 rounded-lg border-neutral-magnolia bg-neutral-magnolia hover:bg-neutral-light-grayish-blue"
-                  to="/shop/cart"
+                  to="/cart"
                   onClick={() => setShowModal(false)}
                 >
                   View <ShoppingCart />
@@ -151,7 +151,7 @@ export default function HeaderSearch({
               {showProductTitle.text}
             </aside>
           </div>
-          <Link to="/user">
+          <Link to="/profile/1">
             <UserCircle2 />
           </Link>
         </ul>

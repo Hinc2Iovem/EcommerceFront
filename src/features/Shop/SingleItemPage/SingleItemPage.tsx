@@ -5,9 +5,7 @@ import img1 from "../../../assets/images/testingSingleItemPage/pexels-avonne-sta
 import img2 from "../../../assets/images/testingSingleItemPage/pexels-josh-hild-17685567.jpg";
 import img3 from "../../../assets/images/testingSingleItemPage/pexels-paige-thompson-19841521.jpg";
 import img4 from "../../../assets/images/testingSingleItemPage/pexels-tetyana-kovyrina-13398438.jpg";
-import BurgerMenu from "../../../components/Header/BurgerMenu";
-import HeaderPills from "../../../components/Header/HeaderPills";
-import HeaderSearch from "../../../components/Header/HeaderSearch";
+import Header from "../../../components/Header/Header";
 import { MATCHMEDIA } from "../../../const/MatchMedia";
 import useCart from "../../../hooks/useCart";
 import useMatchMedia from "../../../hooks/useMatchMedia";
@@ -20,22 +18,13 @@ import useGetProductById from "./useGetProductById";
 
 const imgs = Array.from([img1, img2, img3, img4]);
 
-type SingleItemPageProps = {
-  setCurrentCategory: React.Dispatch<React.SetStateAction<string>>;
-  currentCategory: string;
-};
-
-export default function SingleItemPage({
-  currentCategory,
-  setCurrentCategory,
-}: SingleItemPageProps) {
+export default function SingleItemPage() {
   const { productId } = useParams();
   const product = useGetProductById(Number(productId));
   const [currentImage, setCurrentImage] = useState(1);
   const [currentImageLarge, setCurrentImageLarge] = useState(0);
 
   const [isLightBox, setIsLightBox] = useState(false);
-  const [expandBurgerMenu, setExpandBurgerMenu] = useState(false);
   const mobile = useMatchMedia(MATCHMEDIA.Mobile);
   const { dispatch, REDUCER_ACTIONS, cart } = useCart();
   const currentItem = cart.find((item) => item.id === Number(productId));
@@ -83,17 +72,7 @@ export default function SingleItemPage({
 
   return (
     <>
-      <header className={`sticky  bg-white w-full top-0 z-[2]`}>
-        <HeaderSearch setExpandBurgerMenu={setExpandBurgerMenu} />
-        <HeaderPills
-          setCurrentCategory={setCurrentCategory}
-          currentCategory={currentCategory}
-        />
-      </header>
-      <BurgerMenu
-        setExpandBurgerMenu={setExpandBurgerMenu}
-        expandBurgerMenu={expandBurgerMenu}
-      />
+      <Header />
       <div className={"bg-neutral-magnolia p-[1rem]"}>
         <div className="bg-white h-fit flex md:flex-row flex-col md:gap-[4rem] gap-3 justify-between rounded-lg items-center max-w-[1110px] mx-auto my-[2rem] p-[3rem] ">
           {!mobile ? (

@@ -1,20 +1,17 @@
 import { Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import Layout from "./pages/Layout";
-import Register from "./features/Register/Register";
-import Login from "./features/Login/Login";
 import Cart from "./features/Cart/Cart";
+import Login from "./features/Login/Login";
+import Profile from "./features/Profile/Profile";
+import Register from "./features/Register/Register";
 import Shop from "./features/Shop/Shop";
+import SingleItemPage from "./features/Shop/SingleItemPage/SingleItemPage";
+import Layout from "./pages/Layout";
+import LayoutDefault from "./pages/LayoutDefault";
 import Missing from "./pages/Missing";
 import Unauthorized from "./pages/Unauthorized";
-import SingleItemPage from "./features/Shop/SingleItemPage/SingleItemPage";
-import LayoutShop from "./pages/LayoutShop";
-import { useState } from "react";
-import { CATEGORIES } from "./const/PillsCategories";
 
 export default function App() {
-  const [currentCategory, setCurrentCategory] = useState(CATEGORIES.All);
-
   return (
     <>
       <AuthProvider>
@@ -24,37 +21,16 @@ export default function App() {
             <Route element={<Login />} path="login" />
             <Route element={<Unauthorized />} path="unauthorized" />
 
-            <Route element={<LayoutShop />} path="/shop">
-              <Route
-                element={
-                  <Shop
-                    currentCategory={currentCategory}
-                    setCurrentCategory={setCurrentCategory}
-                  />
-                }
-                index
-              />
-              <Route
-                element={
-                  <SingleItemPage
-                    currentCategory={currentCategory}
-                    setCurrentCategory={setCurrentCategory}
-                  />
-                }
-                path=":productId"
-              />
+            <Route element={<LayoutDefault />} path="/shop">
+              <Route element={<Shop />} index />
+              <Route element={<SingleItemPage />} path=":productId" />
+            </Route>
 
-              <Route
-                element={
-                  <Cart
-                    currentCategory={currentCategory}
-                    setCurrentCategory={setCurrentCategory}
-                  />
-                }
-                path="cart"
-              />
-
-              <Route element={} path="/profile/:userId" />
+            <Route element={<LayoutDefault />} path="/cart">
+              <Route element={<Cart />} index />
+            </Route>
+            <Route element={<LayoutDefault />} path="/profile">
+              <Route element={<Profile />} path=":userId" />
             </Route>
 
             <Route element={<Missing />} path="*" />

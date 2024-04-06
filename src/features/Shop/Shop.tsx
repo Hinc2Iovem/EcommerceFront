@@ -5,6 +5,7 @@ import HeaderPills from "../../components/Header/HeaderPills";
 import HeaderSearch from "../../components/Header/HeaderSearch";
 import { CATEGORIES } from "../../const/PillsCategories";
 import SingleItem from "./SingleItem";
+import Header from "../../components/Header/Header";
 
 export type ProductTypes = {
   category: string;
@@ -19,18 +20,10 @@ export type ProductTypes = {
   title: string;
 };
 
-type ShopProps = {
-  setCurrentCategory: React.Dispatch<React.SetStateAction<string>>;
-  currentCategory: string;
-};
-
-export default function Shop({
-  currentCategory,
-  setCurrentCategory,
-}: ShopProps) {
-  const rerenderRef = useRef(true);
+export default function Shop() {
+  const [currentCategory, setCurrentCategory] = useState(CATEGORIES.All);
   const [products, setProducts] = useState<ProductTypes[]>();
-  const [expandBurgerMenu, setExpandBurgerMenu] = useState(false);
+  const rerenderRef = useRef(true);
   console.log(products);
 
   useEffect(() => {
@@ -56,19 +49,7 @@ export default function Shop({
 
   return (
     <section>
-      <header className={`sticky  bg-white w-full top-0 z-[2]`}>
-        <HeaderSearch setExpandBurgerMenu={setExpandBurgerMenu} />
-        <div className="block md:hidden">
-          <HeaderPills
-            setCurrentCategory={setCurrentCategory}
-            currentCategory={currentCategory}
-          />
-        </div>
-      </header>
-      <BurgerMenu
-        setExpandBurgerMenu={setExpandBurgerMenu}
-        expandBurgerMenu={expandBurgerMenu}
-      />
+      <Header chosenCategory={currentCategory} />
       <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] grid-rows-[repeat(auto-fit,50rem)] p-3 gap-3 bg-neutral-magnolia ">
         <div
           className={`md:flex hidden md:row-span-12 bg-white h-fit flex-col gap-[1rem] p-[1.5rem] rounded-lg shadow-sm sticky top-[90px]`}

@@ -31,14 +31,14 @@ export default function BurgerMenu({
       </div>
       <div className="flex flex-col gap-[1rem]">
         <Link
-          to="/shop/cart"
+          to="/cart"
           className="flex items-center gap-[.4rem] transition-all rounded-lg hover:p-[1rem] hover:bg-primary-orange hover:text-white"
         >
           <ShoppingCart />
           <h3>Cart</h3>
         </Link>
         <Link
-          to="/:userId"
+          to="/profile/:userId"
           className="flex items-center gap-[.4rem] transition-all rounded-lg hover:p-[1rem] hover:bg-primary-orange hover:text-white"
         >
           <User2Icon />
