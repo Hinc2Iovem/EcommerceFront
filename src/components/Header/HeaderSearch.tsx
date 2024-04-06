@@ -75,7 +75,7 @@ export default function HeaderSearch({
             className="flex relative outline-none border-none"
           >
             <ButtonHoverPromptModal
-              className={`p-[.7rem] top-[.5rem] left-[.5rem] font-medium hover:bg-white hover:shadow-black`}
+              className={`p-[.7rem] top-[.5rem] left-[.5rem] font-medium hover:bg-white hover:shadow-black `}
               onClick={() => setShowModal((prev) => !prev)}
               showModal={showModal}
               contentName="Cart"
@@ -88,8 +88,8 @@ export default function HeaderSearch({
               className={`${
                 !showModal
                   ? "hidden"
-                  : "flex flex-col gap-3 fixed overflow-y-scroll"
-              } right-[5px] top-28 bg-white p-[2rem] w-max rounded-lg z-[20] border-[1px] border-solid border-black | cart-arrow-up`}
+                  : "flex flex-col gap-3 fixed overflow-y-auto"
+              } right-[10px] top-28 bg-white p-[2rem] w-max rounded-lg z-[20] border-[1px] border-solid border-black | cart-arrow-up`}
             >
               <h3>Items Count: {totalItems}</h3>
               <hr />

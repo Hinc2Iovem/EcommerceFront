@@ -3,7 +3,7 @@ import { ComponentProps } from "react";
 import { twMerge } from "tailwind-merge";
 
 const ButtonHoverPromptModalStyles = cva(
-  ["z-[999] transition-all hover:translate-x-[5%]"],
+  ["z-[999] transition-all hover:translate-x-[5%] outline-none w-fit"],
   {
     variants: {
       variant: {
@@ -44,14 +44,19 @@ export default function ButtonHoverPromptModal({
   const hoverBeforeClasses = showModal
     ? ""
     : `hover:before:absolute hover:before:bg-white hover:before:bottom-[-4rem] hover:before:left-[-1.5rem] hover:before:p-[.5rem] hover:before:w-[8rem] hover:before:rounded-sm  hover:before:shadow-sm hover:before:shadow-black hover:before:content-['${contentName}']`;
+
   return (
-    <button
-      {...props}
-      className={twMerge(
-        ButtonHoverPromptModalStyles({ variant }),
-        className,
-        hoverBeforeClasses
-      )}
-    ></button>
+    <div className="relative">
+      <button
+        {...props}
+        className={twMerge(
+          ButtonHoverPromptModalStyles({ variant }),
+          className,
+          hoverBeforeClasses
+        )}
+      ></button>
+
+      <aside className="absolute border-black border-[1px] "></aside>
+    </div>
   );
 }

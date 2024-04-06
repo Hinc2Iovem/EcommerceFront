@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import SearchBar from "../shared/SearchBar";
 import { useState } from "react";
+import ButtonHoverPromptModal from "../shared/ButtonHoverPromptModal";
 
 export default function Profile() {
   const [role, setRole] = useState("seller");
@@ -12,11 +13,16 @@ export default function Profile() {
       <Header />
       <div className="flex flex-col p-[1rem]">
         <div className="self-end">
-          <button className=" bg-neutral-magnolia shadow-md py-[.5rem] px-[2rem] rounded-md hover:bg-primary-orange hover:border-none hover:text-white transition-colors">
+          <ButtonHoverPromptModal
+            className="bg-neutral-magnolia m-0 shadow-md hover:bg-primary-orange font-medium text-[1.5rem]"
+            contentName="Configure Products"
+            showModal={false}
+            variant="rectangleWithShadow"
+          >
             <Link to="/configure/products">
               <Bolt />
             </Link>
-          </button>
+          </ButtonHoverPromptModal>
         </div>
 
         <div className="flex gap-[4rem]">
