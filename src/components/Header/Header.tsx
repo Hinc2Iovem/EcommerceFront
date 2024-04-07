@@ -2,16 +2,16 @@ import { useState } from "react";
 import BurgerMenu from "./BurgerMenu";
 import HeaderPills from "./HeaderPills";
 import HeaderSearch from "./HeaderSearch";
-import { CATEGORIES } from "../../const/PillsCategories";
 
 type HeaderTypes = {
   chosenCategory?: string;
+  setCurrentCategory: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export default function Header({ chosenCategory }: HeaderTypes) {
-  const [currentCategory, setCurrentCategory] = useState(
-    chosenCategory ? chosenCategory : CATEGORIES.All
-  );
+export default function Header({
+  chosenCategory = "All",
+  setCurrentCategory,
+}: HeaderTypes) {
   const [expandBurgerMenu, setExpandBurgerMenu] = useState(false);
 
   return (
@@ -21,7 +21,7 @@ export default function Header({ chosenCategory }: HeaderTypes) {
         <div className="block md:hidden">
           <HeaderPills
             setCurrentCategory={setCurrentCategory}
-            currentCategory={chosenCategory ? chosenCategory : currentCategory}
+            currentCategory={chosenCategory}
           />
         </div>
       </header>

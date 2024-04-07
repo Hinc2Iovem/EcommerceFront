@@ -55,19 +55,21 @@ export default function SingleItemPage() {
   };
 
   const handleAddToCart = () => {
-    dispatch({
-      type: REDUCER_ACTIONS.ADD,
-      payload: {
-        id: Number(productId),
-        description: product.description,
-        img: product.image,
-        price: product.price,
-        rating: product.rating,
-        title: product.title,
-        qty: currentItemQty,
-        category: product.category,
-      },
-    });
+    if (currentItemQty > 0) {
+      dispatch({
+        type: REDUCER_ACTIONS.ADD,
+        payload: {
+          id: Number(productId),
+          description: product.description,
+          img: product.image,
+          price: product.price,
+          rating: product.rating,
+          title: product.title,
+          qty: currentItemQty,
+          category: product.category,
+        },
+      });
+    }
   };
 
   return (

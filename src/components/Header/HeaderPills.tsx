@@ -46,7 +46,10 @@ export default function HeaderPills({
   }, [translate]);
 
   return (
-    <nav className="p-5 overflow-x-hidden relative bg-white" ref={containerRef}>
+    <nav
+      className="p-5 overflow-x-hidden relative bg-white md:shadow-md shadow-black"
+      ref={containerRef}
+    >
       <div
         ref={pillsRef}
         style={{ transform: `translateX(-${translate}px)` }}

@@ -9,7 +9,10 @@ export default function Cart() {
   const [currentCategory, setCurrentCategory] = useState(CATEGORIES.All);
   return (
     <section>
-      <Header chosenCategory={currentCategory} />
+      <Header
+        chosenCategory={currentCategory}
+        setCurrentCategory={setCurrentCategory}
+      />
 
       <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] grid-rows-[repeat(auto-fit,minmax(30rem,1fr))] p-3 gap-3 bg-neutral-magnolia ">
         <div
@@ -24,7 +27,7 @@ export default function Cart() {
                   c === currentCategory
                     ? "bg-primary-orange text-white p-[1rem]"
                     : ""
-                } flex font-medium items-center gap-[.4rem] transition-all rounded-lg hover:p-[1rem] hover:bg-primary-orange hover:text-white`}
+                } hover:opacity-90 flex font-medium items-center gap-[.4rem] transition-all rounded-lg hover:p-[1rem] hover:bg-primary-orange hover:text-white`}
               >
                 {c}
               </button>

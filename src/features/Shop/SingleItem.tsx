@@ -21,7 +21,7 @@ export default function SingleItem({
       </div>
       <Link
         to={`${id}`}
-        className="flex justify-between flex-col text-neutral-very-dark-blue"
+        className="flex justify-between flex-col text-neutral-very-dark-blue hover:opacity-80"
       >
         <h3>{title}</h3>
         <h3 className="font-bold">Price - {FormatCurrency(price)}</h3>
@@ -42,7 +42,7 @@ export default function SingleItem({
             },
           })
         }
-        className="bg-primary-orange text-white shadow-primary-orange shadow-lg self-center py-[1rem] px-[2rem] rounded-xl hover:opacity-90"
+        className="bg-primary-orange text-white shadow-primary-orange shadow-lg self-center py-[1rem] px-[2rem] rounded-xl hover:opacity-90 active:scale-[.97] transition-all"
       >
         Add To Cart
       </button>

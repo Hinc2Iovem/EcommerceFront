@@ -4,9 +4,8 @@ import { Link } from "react-router-dom";
 import useCart from "../../hooks/useCart";
 import useLocalStorage from "../../hooks/useLocalStorage";
 import useOutOfModal from "../../hooks/useOutOfModal";
-import "./styles.css";
 import FormatCurrency from "../../utilities/FormatCurrency";
-import ButtonHoverPromptModal from "../../features/shared/ButtonHoverPromptModal";
+import ButtonHoverPromptModal from "../../features/shared/ButtonAsideHoverPromtModal/ButtonHoverPromptModal";
 
 type HeaderSearchProps = {
   setExpandBurgerMenu: React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,6 +17,7 @@ export default function HeaderSearch({
   setExpandBurgerMenu,
 }: HeaderSearchProps) {
   const [showModal, setShowModal] = useState(false);
+
   const [showProductTitle, setShowProductTitle] = useState({
     show: false,
     text: "",
@@ -50,8 +50,8 @@ export default function HeaderSearch({
 
   return (
     <>
-      <nav className="flex justify-between md:shadow-white flex-grow md:shadow-md p-5 items-center w-full">
-        <h1 className="bg-primary-orange hover:opacity-90 shadow-inner shadow-white py-[.5rem] px-[3rem] rounded-xl text-white font-bold text-[3rem] md:block hidden">
+      <nav className="flex justify-between flex-grow md:shadow-md p-5 items-center w-full">
+        <h1 className="bg-primary-orange hover:opacity-90 py-[.5rem] px-[3rem] rounded-xl text-white font-bold text-[3rem] md:block hidden">
           <Link to={"/shop"}>Hinc2Iovem</Link>
         </h1>
         <form className="flex items-center h-[5rem] md:w-[45%] md:mx-auto">
@@ -77,8 +77,9 @@ export default function HeaderSearch({
             <ButtonHoverPromptModal
               className={`p-[.7rem] top-[.5rem] left-[.5rem] font-medium hover:bg-white hover:shadow-black `}
               onClick={() => setShowModal((prev) => !prev)}
-              showModal={showModal}
+              hideModal={showModal}
               contentName="Cart"
+              positionByAbscissa="right"
             >
               <ShoppingCart />
             </ButtonHoverPromptModal>
@@ -149,9 +150,17 @@ export default function HeaderSearch({
               {showProductTitle.text}
             </aside>
           </div>
-          <Link to="/profile/1">
-            <UserCircle2 />
-          </Link>
+          <ButtonHoverPromptModal
+            className={`p-[.7rem] top-[.5rem] left-[.5rem] font-medium hover:bg-white hover:shadow-black `}
+            onClick={() => setShowModal((prev) => !prev)}
+            hideModal={showModal}
+            contentName="Profile"
+            positionByAbscissa="right"
+          >
+            <Link to="/profile/1">
+              <UserCircle2 />
+            </Link>
+          </ButtonHoverPromptModal>
         </ul>
         <div className="md:hidden flex">
           <Menu
