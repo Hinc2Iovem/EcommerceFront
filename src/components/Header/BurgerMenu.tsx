@@ -1,4 +1,4 @@
-import { ShoppingCart, User2Icon, X } from "lucide-react";
+import { Heart, ShoppingCart, User2Icon, X } from "lucide-react";
 import { Link } from "react-router-dom";
 
 type BurgerMenuProps = {
@@ -43,6 +43,14 @@ export default function BurgerMenu({
         >
           <User2Icon />
           <h3>My Profile</h3>
+        </Link>
+
+        <Link
+          to="/favourite"
+          className="flex items-center gap-[.4rem] transition-all rounded-lg hover:p-[1rem] hover:bg-primary-orange hover:text-white"
+        >
+          <Heart />
+          <h3>Favourite</h3>
         </Link>
       </div>
     </aside>

@@ -15,7 +15,7 @@ export default function CartItemPage({
   dispatch,
 }: CartItemProps) {
   return (
-    <div className="flex flex-col bg-white flex-1 p-[1rem] rounded-lg shadow-sm gap-[.5rem] font-medium justify-between relative w-full h-full place-self-end">
+    <div className="flex flex-col bg-white p-[1rem] rounded-lg shadow-sm gap-[.5rem] font-medium justify-between relative w-full h-full ">
       <img
         src={item.img}
         className="object-contain w-full h-[20rem]"

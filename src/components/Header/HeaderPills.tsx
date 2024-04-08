@@ -59,9 +59,9 @@ export default function HeaderPills({
           <button
             className={`${
               currentCategory === c
-                ? "bg-primary-orange text-white"
-                : "bg-white border-[1px] border-black"
-            }  p-3 rounded-lg hover:bg-orange-200 transition-all`}
+                ? "bg-primary-orange hover:bg-primary-orange text-white"
+                : "bg-white"
+            } shadow-md shadow-neutral-grayish-blue p-3 rounded-lg hover:bg-orange-300 hover:text-white transition-all hover:translate-x-1`}
             key={c}
             onClick={() => setCurrentCategory(c)}
           >

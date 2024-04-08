@@ -1,4 +1,4 @@
-import { Menu, Search, ShoppingCart, UserCircle2 } from "lucide-react";
+import { Heart, Menu, Search, ShoppingCart, UserCircle2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import useCart from "../../hooks/useCart";
@@ -70,6 +70,15 @@ export default function HeaderSearch({
           </button>
         </form>
         <ul className="md:flex items-center gap-[2rem] hidden">
+          <ButtonHoverPromptModal
+            className={`p-[.7rem] top-[.5rem] left-[.5rem] font-medium hover:bg-white hover:shadow-black `}
+            contentName="Favourite"
+            positionByAbscissa="right"
+          >
+            <Link to="/favourite">
+              <Heart />
+            </Link>
+          </ButtonHoverPromptModal>
           <div
             ref={modalRef}
             className="flex relative outline-none border-none"
