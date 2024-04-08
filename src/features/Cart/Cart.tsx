@@ -3,14 +3,12 @@ import Header from "../../components/Header/Header";
 import { CATEGORIES } from "../../const/PillsCategories";
 import useCart from "../../hooks/useCart";
 import CartItemPage from "./CartItem";
-import DivBgColor from "../shared/DivBgColor";
 
 export default function Cart() {
   const { totalItems, totalPrice, cart, dispatch, REDUCER_ACTIONS } = useCart();
   const [currentCategory, setCurrentCategory] = useState(CATEGORIES.All);
   return (
     <>
-      <DivBgColor />
       <section>
         <Header
           currentCategory={currentCategory}

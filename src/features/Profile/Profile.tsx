@@ -1,11 +1,11 @@
-import { Bolt, Pencil, Trash2, User2 } from "lucide-react";
+import { List, ListPlus, Pencil, Trash2, User2 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import { CATEGORIES } from "../../const/PillsCategories";
+import LightBoxConfigure from "./LightBoxConfigure";
 import ButtonHoverPromptModal from "../shared/ButtonAsideHoverPromtModal/ButtonHoverPromptModal";
 import SearchBar from "../shared/SearchBar";
-import DivBgColor from "../shared/DivBgColor";
 
 const CATEGORIES_SELLER = {
   BOUGHT_PRODUCTS: "Bought Products",
@@ -15,29 +15,38 @@ const CATEGORIES_SELLER = {
 export default function Profile() {
   const [role, setRole] = useState("seller");
   const [currentCategory, setCurrentCategory] = useState(CATEGORIES.All);
+  const [isLightBox, setIsLightBox] = useState(false);
   const [currentCategorySeller, setCurrentCategorySeller] = useState(
     CATEGORIES_SELLER.BOUGHT_PRODUCTS
   );
 
   return (
     <>
-      <DivBgColor />
       <section className="h-full">
         <Header
           currentCategory={currentCategory}
           setCurrentCategory={setCurrentCategory}
         />
         <div className="flex flex-col p-[2rem] max-w-[144rem] m-auto h-full">
-          <div className="self-end mb-[3rem]">
+          <div className="self-end mb-[3rem] flex gap-[.5rem]">
+            <Link to="/add/products">
+              <ButtonHoverPromptModal
+                className="bg-white m-0 shadow-md hover:bg-primary-orange font-medium text-[1.5rem]"
+                variant="rectangleWithShadow"
+                contentName="Add Product"
+                positionByAbscissa="right"
+              >
+                <ListPlus />
+              </ButtonHoverPromptModal>
+            </Link>
             <ButtonHoverPromptModal
               className="bg-white m-0 shadow-md hover:bg-primary-orange font-medium text-[1.5rem]"
               variant="rectangleWithShadow"
-              contentName="Configure Products"
+              contentName="Products For Sale"
               positionByAbscissa="right"
+              onClick={() => setIsLightBox(true)}
             >
-              <Link to="/configure/products">
-                <Bolt />
-              </Link>
+              <List />
             </ButtonHoverPromptModal>
           </div>
 
@@ -126,6 +135,17 @@ export default function Profile() {
           </div>
         </div>
       </section>
+
+      <LightBoxConfigure
+        isLightBox={isLightBox}
+        setIsLightBox={setIsLightBox}
+      />
+
+      <aside
+        className={`${isLightBox ? "fixed z-[100] left-[1/2]" : "hidden"} `}
+      >
+        New Year
+      </aside>
     </>
   );
 }

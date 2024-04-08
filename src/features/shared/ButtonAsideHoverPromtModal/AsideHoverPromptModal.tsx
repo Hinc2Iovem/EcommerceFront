@@ -37,11 +37,13 @@ export default function AsideHoverPromptModal({
   hideModal,
   showAsidePrompt,
   positionByAbscissa,
+  position,
   ...props
 }: AsideHoverPromptModalProps) {
   const clickToOpenModal = hideModal ? "hidden" : "block";
   const hoverOnButtonToOpenAsideModal = showAsidePrompt ? "block" : "hidden";
-
+  const wrapperDivPositionAbsolute =
+    position === "relative" ? "" : "bottom-[-4rem]";
   const currentPosition = `${positionByAbscissa}-0`;
 
   return (
@@ -52,7 +54,8 @@ export default function AsideHoverPromptModal({
         className,
         clickToOpenModal,
         hoverOnButtonToOpenAsideModal,
-        currentPosition
+        currentPosition,
+        wrapperDivPositionAbsolute
       )}
     >
       {contentName}

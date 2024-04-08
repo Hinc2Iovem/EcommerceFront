@@ -12,6 +12,7 @@ import Missing from "./pages/Missing";
 import Unauthorized from "./pages/Unauthorized";
 import LayoutDefault from "./pages/LayoutDefault";
 import Favourite from "./features/Favourite/Favourite";
+import ConfigureProducts from "./features/ConfigureProducts/ConfigureProducts";
 
 export default function App() {
   return (
@@ -24,22 +25,26 @@ export default function App() {
             <Route element={<Unauthorized />} path="unauthorized" />
 
             <Route element={<LayoutCart />}>
-              <Route element={<LayoutDefault />} path="/shop">
+              <Route element={<LayoutDefault />} path="shop">
                 <Route element={<Shop />} index />
                 <Route element={<SingleItemPage />} path=":productId" />
               </Route>
 
-              <Route element={<LayoutDefault />} path="/cart">
+              <Route element={<LayoutDefault />} path="cart">
                 <Route element={<Cart />} index />
               </Route>
             </Route>
 
-            <Route element={<LayoutDefault />} path="/favourite">
+            <Route element={<LayoutDefault />} path="favourite">
               <Route element={<Favourite />} index />
             </Route>
 
-            <Route element={<LayoutDefault />} path="/profile">
+            <Route element={<LayoutDefault />} path="profile">
               <Route element={<Profile />} path=":userId" />
+            </Route>
+
+            <Route element={<LayoutDefault />} path="add/products">
+              <Route element={<ConfigureProducts />} index />
             </Route>
             <Route element={<Missing />} path="*" />
           </Route>

@@ -1,9 +1,8 @@
+import { Pencil, Trash2, User2 } from "lucide-react";
 import { useState } from "react";
 import Header from "../../components/Header/Header";
-import DivBgColor from "../shared/DivBgColor";
 import { CATEGORIES } from "../../const/PillsCategories";
 import SearchBar from "../shared/SearchBar";
-import { Pencil, Trash2, User2 } from "lucide-react";
 
 export default function Favourite() {
   const [currentCategory, setCurrentCategory] = useState(CATEGORIES.All);
@@ -14,7 +13,6 @@ export default function Favourite() {
         currentCategory={currentCategory}
         setCurrentCategory={setCurrentCategory}
       />
-      <DivBgColor />
       <section className="max-w-[146rem] p-[1rem] flex flex-col m-auto gap-[1rem]">
         <SearchBar />
         <div className="flex flex-col gap-[1.5rem]">

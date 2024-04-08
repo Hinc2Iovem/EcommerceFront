@@ -70,15 +70,15 @@ export default function HeaderSearch({
           </button>
         </form>
         <ul className="md:flex items-center gap-[2rem] hidden">
-          <ButtonHoverPromptModal
-            className={`p-[.7rem] top-[.5rem] left-[.5rem] font-medium hover:bg-white hover:shadow-black `}
-            contentName="Favourite"
-            positionByAbscissa="right"
-          >
-            <Link to="/favourite">
+          <Link to="/favourite">
+            <ButtonHoverPromptModal
+              className={`p-[.7rem] top-[.5rem] left-[.5rem] font-medium hover:bg-white hover:shadow-black `}
+              contentName="Favourite"
+              positionByAbscissa="right"
+            >
               <Heart />
-            </Link>
-          </ButtonHoverPromptModal>
+            </ButtonHoverPromptModal>
+          </Link>
           <div
             ref={modalRef}
             className="flex relative outline-none border-none"
@@ -159,17 +159,17 @@ export default function HeaderSearch({
               {showProductTitle.text}
             </aside>
           </div>
-          <ButtonHoverPromptModal
-            className={`p-[.7rem] top-[.5rem] left-[.5rem] font-medium hover:bg-white hover:shadow-black `}
-            onClick={() => setShowModal((prev) => !prev)}
-            hideModal={showModal}
-            contentName="Profile"
-            positionByAbscissa="right"
-          >
-            <Link to="/profile/1">
+          <Link to="/profile/1">
+            <ButtonHoverPromptModal
+              className={`p-[.7rem] top-[.5rem] left-[.5rem] font-medium hover:bg-white hover:shadow-black `}
+              onClick={() => setShowModal((prev) => !prev)}
+              hideModal={showModal}
+              contentName="Profile"
+              positionByAbscissa="right"
+            >
               <UserCircle2 />
-            </Link>
-          </ButtonHoverPromptModal>
+            </ButtonHoverPromptModal>
+          </Link>
         </ul>
         <div className="md:hidden flex">
           <Menu

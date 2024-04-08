@@ -1,5 +1,5 @@
 import { VariantProps, cva } from "class-variance-authority";
-import { ComponentProps, useRef, useState } from "react";
+import { ComponentProps, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import AsideHoverPromptModal from "./AsideHoverPromptModal";
 
@@ -14,7 +14,7 @@ const ButtonHoverPromptModalStyles = cva(
         ],
         rectangle: ["py-[.5rem] px-[2rem] rounded-md"],
         rectangleWithShadow: [
-          "hover:shadow-black py-[.5rem] px-[2rem] rounded-md",
+          "hover:shadow-black py-[.5rem] px-[2rem] rounded-md shadow-sm",
         ],
       },
     },
@@ -28,13 +28,19 @@ export interface hidePromptModal {
   hideModal?: boolean;
   contentName: string;
   positionByAbscissa: "left" | "right";
+  position?: "absolute" | "relative" | "fixed" | "sticky";
+}
+
+interface exclusivelyButtonTypes extends hidePromptModal {
+  marginAutoSide?: "ml-auto" | "mr-auto" | "m-auto";
+  positionForDiv?: string;
 }
 
 type ButtonHoverPromptModalProps = VariantProps<
   typeof ButtonHoverPromptModalStyles
 > &
   ComponentProps<"button"> &
-  hidePromptModal;
+  exclusivelyButtonTypes;
 
 export default function ButtonHoverPromptModal({
   variant,
@@ -42,12 +48,20 @@ export default function ButtonHoverPromptModal({
   contentName,
   hideModal,
   positionByAbscissa = "right",
+  marginAutoSide,
+  position,
+  positionForDiv,
   ...props
 }: ButtonHoverPromptModalProps) {
   const [showAsidePrompt, setShowAsidePrompt] = useState(false);
-
+  const putDiveInPositionByAbscissa =
+    position !== "relative" ? `${positionForDiv}` : "";
   return (
-    <div className="relative ">
+    <div
+      className={`${marginAutoSide ? `${marginAutoSide}` : ""} ${
+        position ? position : "relative"
+      } ${putDiveInPositionByAbscissa}`}
+    >
       <button
         {...props}
         className={twMerge(
@@ -62,6 +76,7 @@ export default function ButtonHoverPromptModal({
         hideModal={hideModal}
         showAsidePrompt={showAsidePrompt}
         positionByAbscissa={positionByAbscissa}
+        position={position}
       />
     </div>
   );
