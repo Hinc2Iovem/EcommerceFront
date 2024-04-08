@@ -24,7 +24,7 @@ export default function Profile() {
       <DivBgColor />
       <section className="h-full">
         <Header
-          chosenCategory={currentCategory}
+          currentCategory={currentCategory}
           setCurrentCategory={setCurrentCategory}
         />
         <div className="flex flex-col p-[2rem] max-w-[144rem] m-auto h-full">
@@ -94,7 +94,7 @@ export default function Profile() {
             </div>
             <div className="flex-grow">
               <SearchBar />
-              <div className="h-full grid grid-cols-[repeat(auto-fill,minmax(25rem,1fr))] grid-rows-[repeat(auto-fit,40rem)] p-3 gap-3 justify-items-center items-center">
+              <div className="h-full grid grid-cols-[repeat(auto-fill,minmax(25rem,1fr))] grid-rows-[repeat(auto-fit,minmax(30rem,1fr))] p-3 gap-3 justify-items-center items-center">
                 <div className="bg-white w-full h-full overflow-hidden p-[1rem] rounded-lg border-primary-pastel-blue border-[3px] border-dotted flex flex-col gap-[1rem] justify-between">
                   <User2 className="self-center h-[5rem] w-[5rem]" />
                   <div className="flex flex-col gap-[.3rem]">

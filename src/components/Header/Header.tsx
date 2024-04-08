@@ -4,12 +4,12 @@ import HeaderPills from "./HeaderPills";
 import HeaderSearch from "./HeaderSearch";
 
 type HeaderTypes = {
-  chosenCategory?: string;
+  currentCategory?: string;
   setCurrentCategory: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export default function Header({
-  chosenCategory = "All",
+  currentCategory = "All",
   setCurrentCategory,
 }: HeaderTypes) {
   const [expandBurgerMenu, setExpandBurgerMenu] = useState(false);
@@ -21,7 +21,7 @@ export default function Header({
         <div className="block md:hidden">
           <HeaderPills
             setCurrentCategory={setCurrentCategory}
-            currentCategory={chosenCategory}
+            currentCategory={currentCategory}
           />
         </div>
       </header>

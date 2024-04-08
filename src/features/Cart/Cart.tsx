@@ -13,7 +13,7 @@ export default function Cart() {
       <DivBgColor />
       <section>
         <Header
-          chosenCategory={currentCategory}
+          currentCategory={currentCategory}
           setCurrentCategory={setCurrentCategory}
         />
 
