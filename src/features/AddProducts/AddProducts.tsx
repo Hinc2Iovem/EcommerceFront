@@ -1,15 +1,15 @@
 import { useState } from "react";
 import Header from "../../components/Header/Header";
 import { CATEGORIES } from "../../const/PillsCategories";
-import InputLabelGoesDown from "./InputLabelGoesDown";
+import InputLabelGoesDown from "../shared/InputLabelGoesDown";
 import { ImagePlus, Save } from "lucide-react";
 import ButtonHoverPromptModal from "../shared/ButtonAsideHoverPromtModal/ButtonHoverPromptModal";
 
-export default function ConfigureProducts() {
+export default function AddProducts() {
   const [currentCategory, setCurrentCategory] = useState(CATEGORIES.All);
   const [title, setTitle] = useState("");
   const [brandName, setBrandName] = useState("");
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState();
   const [description, setDescription] = useState("");
   console.log(price);
   console.log(title);
@@ -23,7 +23,7 @@ export default function ConfigureProducts() {
       />
       <section className="flex flex-col gap-[1rem] p-[1rem] max-w-[146rem] m-auto relative items-center">
         <form
-          className="bg-white max-w-[70rem] w-full rounded-md h-fit shadow-md shadow-black px-[1rem] py-[2rem] flex flex-col gap-[2rem] mt-[5rem] relative"
+          className="bg-white max-w-[70rem] w-full rounded-md h-fit shadow-md shadow-black px-[1rem] py-[3rem] flex flex-col gap-[2rem] mt-[5rem] relative"
           id="addProduct"
         >
           <InputLabelGoesDown

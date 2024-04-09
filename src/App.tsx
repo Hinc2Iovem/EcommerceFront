@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import Cart from "./features/Cart/Cart";
+import Favourite from "./features/Favourite/Favourite";
 import Login from "./features/Login/Login";
 import Profile from "./features/Profile/Profile";
 import Register from "./features/Register/Register";
@@ -8,11 +9,10 @@ import Shop from "./features/Shop/Shop";
 import SingleItemPage from "./features/Shop/SingleItemPage/SingleItemPage";
 import Layout from "./pages/Layout";
 import LayoutCart from "./pages/LayoutCart";
+import LayoutDefault from "./pages/LayoutDefault";
 import Missing from "./pages/Missing";
 import Unauthorized from "./pages/Unauthorized";
-import LayoutDefault from "./pages/LayoutDefault";
-import Favourite from "./features/Favourite/Favourite";
-import ConfigureProducts from "./features/ConfigureProducts/ConfigureProducts";
+import AddProducts from "./features/AddProducts/AddProducts";
 
 export default function App() {
   return (
@@ -44,7 +44,7 @@ export default function App() {
             </Route>
 
             <Route element={<LayoutDefault />} path="add/products">
-              <Route element={<ConfigureProducts />} index />
+              <Route element={<AddProducts />} index />
             </Route>
             <Route element={<Missing />} path="*" />
           </Route>

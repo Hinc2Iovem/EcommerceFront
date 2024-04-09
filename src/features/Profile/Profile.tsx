@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import { CATEGORIES } from "../../const/PillsCategories";
-import LightBoxConfigure from "../shared/LightBox";
 import ButtonHoverPromptModal from "../shared/ButtonAsideHoverPromtModal/ButtonHoverPromptModal";
+import LightBox from "../shared/LightBox";
 import SearchBar from "../shared/SearchBar";
 import SellingProductsListModal from "./SellingProductsListModal";
 
@@ -137,10 +137,7 @@ export default function Profile() {
         </div>
       </section>
 
-      <LightBoxConfigure
-        isLightBox={isLightBox}
-        setIsLightBox={setIsLightBox}
-      />
+      <LightBox isLightBox={isLightBox} setIsLightBox={setIsLightBox} />
 
       <SellingProductsListModal isLightBox={isLightBox} />
     </>
