@@ -11,10 +11,11 @@ import useCart from "../../../hooks/useCart";
 import useMatchMedia from "../../../hooks/useMatchMedia";
 import FormatCurrency from "../../../utilities/FormatCurrency";
 import { CartItem } from "../../Cart/CartContext";
-import LightBox from "./LightBox";
 import RenderImages from "./RenderImages";
 import RenderImagesLarge from "./RenderImagesLarge";
+import ShowImagesOnLightBox from "./ShowImagesOnLightBox";
 import useGetProductById from "./useGetProductById";
+import LightBox from "../../shared/LightBox";
 
 const imgs = Array.from([img1, img2, img3, img4]);
 
@@ -22,7 +23,6 @@ export default function SingleItemPage() {
   const { productId } = useParams();
   const product = useGetProductById(Number(productId));
   const [currentImage, setCurrentImage] = useState(1);
-  const [currentImageLarge, setCurrentImageLarge] = useState(0);
 
   const [isLightBox, setIsLightBox] = useState(false);
   const mobile = useMatchMedia(MATCHMEDIA.Mobile);
@@ -180,11 +180,11 @@ export default function SingleItemPage() {
         </div>
       </div>
 
-      <LightBox
-        currentImageLarge={currentImageLarge}
+      <LightBox isLightBox={isLightBox} setIsLightBox={setIsLightBox} />
+
+      <ShowImagesOnLightBox
         imgs={imgs}
         isLightBox={isLightBox}
-        setCurrentImageLarge={setCurrentImageLarge}
         setIsLightBox={setIsLightBox}
       />
     </>

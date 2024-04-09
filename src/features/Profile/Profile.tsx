@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import { CATEGORIES } from "../../const/PillsCategories";
-import LightBoxConfigure from "./LightBoxConfigure";
+import LightBoxConfigure from "../shared/LightBox";
 import ButtonHoverPromptModal from "../shared/ButtonAsideHoverPromtModal/ButtonHoverPromptModal";
 import SearchBar from "../shared/SearchBar";
 import SellingProductsListModal from "./SellingProductsListModal";

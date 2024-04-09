@@ -5,7 +5,7 @@ type LightBoxConfigureTypes = {
   setIsLightBox: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function LightBoxConfigure({
+export default function LightBox({
   isLightBox,
   setIsLightBox,
 }: LightBoxConfigureTypes) {
