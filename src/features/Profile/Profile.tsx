@@ -6,6 +6,7 @@ import { CATEGORIES } from "../../const/PillsCategories";
 import LightBoxConfigure from "./LightBoxConfigure";
 import ButtonHoverPromptModal from "../shared/ButtonAsideHoverPromtModal/ButtonHoverPromptModal";
 import SearchBar from "../shared/SearchBar";
+import SellingProductsListModal from "./SellingProductsListModal";
 
 const CATEGORIES_SELLER = {
   BOUGHT_PRODUCTS: "Bought Products",
@@ -141,11 +142,7 @@ export default function Profile() {
         setIsLightBox={setIsLightBox}
       />
 
-      <aside
-        className={`${isLightBox ? "fixed z-[100] left-[1/2]" : "hidden"} `}
-      >
-        New Year
-      </aside>
+      <SellingProductsListModal isLightBox={isLightBox} />
     </>
   );
 }
