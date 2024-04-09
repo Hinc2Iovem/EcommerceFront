@@ -1,145 +1,105 @@
-import { List, ListPlus, Pencil, Trash2, User2 } from "lucide-react";
+import { List, ListPlus } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import { CATEGORIES } from "../../const/PillsCategories";
 import ButtonHoverPromptModal from "../shared/ButtonAsideHoverPromtModal/ButtonHoverPromptModal";
 import LightBox from "../shared/LightBox";
-import SearchBar from "../shared/SearchBar";
-import SellingProductsListModal from "./SellingProductsListModal";
-
-const CATEGORIES_SELLER = {
-  BOUGHT_PRODUCTS: "Bought Products",
-  SOLD_PRODUCTS: "Sold Products",
-};
+import ProfileProductsSide from "./ProfileProductsSide";
+import ProfileUserSide from "./ProfileUserSide";
+import SellingProductsListModal from "./ForSellers/SellingProductsListModal";
+import ProfileFooter from "./ProfileFooter";
+import { Gem } from "lucide-react";
 
 export default function Profile() {
-  const [role, setRole] = useState("seller");
+  const [role, setRole] = useState("Admin");
   const [currentCategory, setCurrentCategory] = useState(CATEGORIES.All);
   const [isLightBox, setIsLightBox] = useState(false);
-  const [currentCategorySeller, setCurrentCategorySeller] = useState(
-    CATEGORIES_SELLER.BOUGHT_PRODUCTS
-  );
-
+  const [showProdactsListModal, setShowProdactsListModal] = useState(false);
+  useState(false);
   return (
     <>
-      <section className="h-full">
+      <section
+        className={`h-full flex flex-col ${
+          role !== "seller" ? "justify-between" : ""
+        }  items-center`}
+      >
         <Header
           currentCategory={currentCategory}
           setCurrentCategory={setCurrentCategory}
         />
-        <div className="flex flex-col p-[2rem] max-w-[144rem] m-auto h-full">
-          <div className="self-end mb-[3rem] flex gap-[.5rem]">
-            <Link to="/add/products">
+        <div className="flex flex-col p-[2rem] max-w-[144rem] w-full">
+          <div className="flex items-center justify-between">
+            <div
+              className={`${
+                role === "Admin" || role === "Moderator" ? "visible" : "hidden"
+              } mb-[3rem] flex gap-[.5rem]`}
+            >
+              <Link to="/permissions">
+                <ButtonHoverPromptModal
+                  className="bg-white m-0 shadow-md hover:bg-primary-orange font-medium text-[1.5rem]"
+                  variant="rectangleWithShadow"
+                  contentName="Give Permission For Becoming A Seller"
+                  positionByAbscissa="left"
+                >
+                  <Gem />
+                </ButtonHoverPromptModal>
+              </Link>
+            </div>
+
+            <div
+              className={`${
+                role === "seller" ? "visible" : "hidden"
+              } mb-[3rem] flex gap-[.5rem] ml-auto`}
+            >
+              <Link to="/add/products">
+                <ButtonHoverPromptModal
+                  className="bg-white m-0 shadow-md hover:bg-primary-orange font-medium text-[1.5rem]"
+                  variant="rectangleWithShadow"
+                  contentName="Add Product"
+                  positionByAbscissa="right"
+                >
+                  <ListPlus />
+                </ButtonHoverPromptModal>
+              </Link>
               <ButtonHoverPromptModal
                 className="bg-white m-0 shadow-md hover:bg-primary-orange font-medium text-[1.5rem]"
                 variant="rectangleWithShadow"
-                contentName="Add Product"
+                contentName="Products For Sale"
                 positionByAbscissa="right"
+                onClick={() => {
+                  setShowProdactsListModal(true);
+                  setIsLightBox(true);
+                }}
               >
-                <ListPlus />
+                <List />
               </ButtonHoverPromptModal>
-            </Link>
-            <ButtonHoverPromptModal
-              className="bg-white m-0 shadow-md hover:bg-primary-orange font-medium text-[1.5rem]"
-              variant="rectangleWithShadow"
-              contentName="Products For Sale"
-              positionByAbscissa="right"
-              onClick={() => setIsLightBox(true)}
-            >
-              <List />
-            </ButtonHoverPromptModal>
+            </div>
           </div>
 
           <div className="flex gap-[2rem] justify-between md:flex-row flex-col">
-            <div className="gap-[3rem] flex-col flex flex-shrink-0">
-              <div className="flex md:flex-col items-center gap-[2rem]">
-                <div className="flex flex-col shrink-0 gap-[1rem] md:m-0 items-center m-auto w-full">
-                  <div className="bg-white p-[1rem] rounded-lg border-primary-pastel-blue border-[3px] border-dotted flex flex-col items-center w-full">
-                    <User2 className="w-[15rem] h-[20rem] text-black" />
-                    <h5 className="font-medium">Username</h5>
-                    <p className="font-medium">Status: Seller</p>
-                  </div>
-                  <div
-                    className={` ${
-                      role === "seller" ? "block" : "hidden"
-                    } bg-white flex flex-col w-full gap-[1rem] shadow-sm p-[1.5rem] rounded-lg border-primary-pastel-blue border-[3px] border-dotted`}
-                  >
-                    {Object.values(CATEGORIES_SELLER).map((c) => (
-                      <div
-                        key={c}
-                        className="flex items-center gap-[1rem] w-full"
-                      >
-                        <button
-                          className={`${
-                            c === currentCategorySeller
-                              ? " bg-green-400 hover:opacity-100 text-white p-[1rem]"
-                              : ""
-                          } w-full hover:opacity-90 hover:bg-green-400 flex font-medium items-center gap-[.4rem] transition-all rounded-lg hover:p-[1rem]  hover:text-white outline-white`}
-                          onClick={() => setCurrentCategorySeller(c)}
-                        >
-                          {c}
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-white w-full overflow-y-auto h-full max-h-[40rem] hidden md:flex flex-col gap-[1rem] shadow-sm p-[1.5rem] rounded-lg border-primary-pastel-blue border-[3px] border-dotted">
-                  {Object.values(CATEGORIES).map((c) => (
-                    <button
-                      key={c}
-                      onClick={() => setCurrentCategory(c)}
-                      className={`${
-                        c === currentCategory
-                          ? "bg-primary-orange text-white p-[1rem]"
-                          : ""
-                      } outline-white hover:opacity-90 flex font-medium items-center gap-[.4rem] transition-all rounded-lg hover:p-[1rem] hover:bg-primary-orange hover:text-white`}
-                    >
-                      {c}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className="flex-grow">
-              <SearchBar />
-              <div className="h-full grid grid-cols-[repeat(auto-fill,minmax(25rem,1fr))] grid-rows-[repeat(auto-fit,minmax(30rem,1fr))] p-3 gap-3 justify-items-center items-center">
-                <div className="bg-white w-full h-full overflow-hidden p-[1rem] rounded-lg border-primary-pastel-blue border-[3px] border-dotted flex flex-col gap-[1rem] justify-between">
-                  <User2 className="self-center h-[5rem] w-[5rem]" />
-                  <div className="flex flex-col gap-[.3rem]">
-                    <div className="mb-[3rem] font-medium">
-                      <h5>Title</h5>
-                      <h5>Price</h5>
-                    </div>
-                    <div
-                      className={`${
-                        role === "seller"
-                          ? "flex flex-col gap-[.5rem]"
-                          : "hidden"
-                      }`}
-                    >
-                      <h4 className="font-medium">Id</h4>
-                      <div className="flex items-center gap-[1px]">
-                        <button className="w-[50%] self-center border-[1px] transition-all border-black hover:text-white p-[.1rem] active:scale-[.97] rounded-md hover:bg-red-300">
-                          <Trash2 className="m-auto" />
-                        </button>
-                        <button className="w-[50%] border-[1px] border-black transition-all hover:text-white p-[.1rem] active:scale-[.97] rounded-md hover:bg-orange-300">
-                          <Pencil className="m-auto" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ProfileUserSide
+              role={role}
+              currentCategory={currentCategory}
+              setCurrentCategory={setCurrentCategory}
+            />
+            <ProfileProductsSide role={role} />
           </div>
         </div>
+        <ProfileFooter setRole={setRole} role={role} />
       </section>
 
-      <LightBox isLightBox={isLightBox} setIsLightBox={setIsLightBox} />
+      <LightBox
+        isLightBox={isLightBox}
+        setIsLightBox={setIsLightBox}
+        multipleLightBoxesOnOnePage={true}
+        showModal={setShowProdactsListModal}
+      />
 
-      <SellingProductsListModal isLightBox={isLightBox} />
+      <SellingProductsListModal
+        isLightBox={isLightBox}
+        showProdactsListModal={showProdactsListModal}
+      />
     </>
   );
 }

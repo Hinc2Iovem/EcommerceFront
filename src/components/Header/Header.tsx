@@ -5,13 +5,13 @@ import HeaderSearch from "./HeaderSearch";
 
 type HeaderTypes = {
   currentCategory?: string;
-  setCurrentCategory: React.Dispatch<React.SetStateAction<string>>;
+  setCurrentCategory?: React.Dispatch<React.SetStateAction<string>>;
   showPillsOrNot?: boolean;
 };
 
 export default function Header({
   currentCategory = "All",
-  setCurrentCategory,
+  setCurrentCategory = () => {},
   showPillsOrNot = true,
 }: HeaderTypes) {
   const [expandBurgerMenu, setExpandBurgerMenu] = useState(false);

@@ -13,6 +13,7 @@ import LayoutDefault from "./pages/LayoutDefault";
 import Missing from "./pages/Missing";
 import Unauthorized from "./pages/Unauthorized";
 import AddProducts from "./features/AddProducts/AddProducts";
+import Permission from "./features/GivePermissions/Permission";
 
 export default function App() {
   return (
@@ -45,6 +46,10 @@ export default function App() {
 
             <Route element={<LayoutDefault />} path="add/products">
               <Route element={<AddProducts />} index />
+            </Route>
+
+            <Route element={<LayoutDefault />} path="permissions">
+              <Route element={<Permission />} index />
             </Route>
             <Route element={<Missing />} path="*" />
           </Route>

@@ -3,11 +3,15 @@ import { useEffect, useRef } from "react";
 type LightBoxConfigureTypes = {
   isLightBox: boolean;
   setIsLightBox: React.Dispatch<React.SetStateAction<boolean>>;
+  showModal?: React.Dispatch<React.SetStateAction<boolean>>;
+  multipleLightBoxesOnOnePage?: boolean;
 };
 
 export default function LightBox({
   isLightBox,
   setIsLightBox,
+  multipleLightBoxesOnOnePage = false,
+  showModal,
 }: LightBoxConfigureTypes) {
   const lightBoxImagesRef = useRef<HTMLDivElement | null>(null);
 
@@ -15,12 +19,18 @@ export default function LightBox({
     const handleExitClick = (e: MouseEvent) => {
       if (isLightBox && e.target === lightBoxImagesRef.current) {
         setIsLightBox(false);
+        if (multipleLightBoxesOnOnePage && showModal) {
+          showModal(false);
+        }
       }
     };
 
     const handleExitKey = (e: KeyboardEvent) => {
       if (isLightBox && e.key == "Escape") {
         setIsLightBox(false);
+        if (multipleLightBoxesOnOnePage && showModal) {
+          showModal(false);
+        }
       }
     };
 
@@ -31,13 +41,15 @@ export default function LightBox({
       document.removeEventListener("click", handleExitClick);
       document.removeEventListener("keydown", handleExitKey);
     };
-  }, [isLightBox, setIsLightBox]);
+  }, [isLightBox, setIsLightBox, multipleLightBoxesOnOnePage, showModal]);
 
   return (
     <>
       <div
         ref={lightBoxImagesRef}
-        className={` ${isLightBox ? "md:opacity-90 fixed inset-0" : "opacity-0"}
+        className={` ${
+          isLightBox ? "opacity-80 fixed inset-0 visible" : "opacity-0 hidden"
+        }
         bg-black
         z-[3]
         transition-opacity

@@ -1,15 +1,21 @@
 import { Beef } from "lucide-react";
 import { Link } from "react-router-dom";
 
+type SellingProductsListModalTypes = {
+  showProdactsListModal: boolean;
+  isLightBox: boolean;
+};
+
 export default function SellingProductsListModal({
   isLightBox,
-}: {
-  isLightBox: boolean;
-}) {
+  showProdactsListModal,
+}: SellingProductsListModalTypes) {
+  console.log(isLightBox, showProdactsListModal);
+
   return (
     <aside
       className={`${
-        isLightBox
+        isLightBox && showProdactsListModal
           ? "absolute z-[4] bg-neutral-magnolia w-[30rem] h-[50rem] top-[calc(50%-25rem)] left-[calc(50%-15rem)]"
           : "hidden"
       } transition-all rounded-md opacity-90 p-[1rem]`}

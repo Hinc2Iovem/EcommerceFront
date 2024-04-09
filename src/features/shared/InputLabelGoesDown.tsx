@@ -1,3 +1,5 @@
+import { ComponentProps } from "react";
+
 type InputLabelGoesDownTypes<T> = {
   value: T;
   setValue: React.Dispatch<React.SetStateAction<T>>;
@@ -5,7 +7,8 @@ type InputLabelGoesDownTypes<T> = {
   id: string;
   placeHolder: string;
   type: string;
-};
+  className?: string;
+} & ComponentProps<"div">;
 
 export default function InputLabelGoesDown<T>({
   value,
@@ -13,10 +16,12 @@ export default function InputLabelGoesDown<T>({
   htmlFor,
   id,
   placeHolder,
+  className,
   type,
+  ...props
 }: InputLabelGoesDownTypes<T>) {
   return (
-    <div className="relative">
+    <div {...props} className={`relative ${className}`}>
       <label
         htmlFor={htmlFor}
         className={`${

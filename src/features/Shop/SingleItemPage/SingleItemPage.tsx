@@ -74,7 +74,7 @@ export default function SingleItemPage() {
 
   return (
     <>
-      <Header />
+      <Header showPillsOrNot={false} />
       <div className={"bg-neutral-magnolia p-[1rem]"}>
         <div className="bg-white h-fit flex md:flex-row flex-col md:gap-[4rem] gap-3 justify-between rounded-lg items-center max-w-[1110px] mx-auto my-[2rem] p-[3rem] ">
           {!mobile ? (
