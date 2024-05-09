@@ -16,6 +16,8 @@ import AddProducts from "./features/AddProducts/AddProducts";
 import Permission from "./features/GivePermissions/Permission";
 
 export default function App() {
+  console.log("Client state");
+
   return (
     <>
       <AuthProvider>
