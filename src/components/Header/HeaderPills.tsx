@@ -7,11 +7,13 @@ const TRANSLATE_AMOUNT = 200;
 type HeaderPillsProps = {
   setCurrentCategory: React.Dispatch<React.SetStateAction<string>>;
   currentCategory: string;
+  setIsClicked?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function HeaderPills({
   currentCategory,
   setCurrentCategory,
+  setIsClicked,
 }: HeaderPillsProps) {
   const containerRef = useRef<HTMLElement | null>(null);
   const pillsRef = useRef<HTMLDivElement | null>(null);
@@ -55,17 +57,22 @@ export default function HeaderPills({
         style={{ transform: `translateX(-${translate}px)` }}
         className="flex whitespace-nowrap gap-3 transition-transform w-[max-content]"
       >
-        {Object.keys(CATEGORIES).map((c) => (
+        {Object.entries(CATEGORIES).map(([key, value]) => (
           <button
             className={`${
-              currentCategory === c
+              currentCategory === value
                 ? "bg-primary-orange hover:bg-primary-orange text-white"
                 : "bg-white"
             } shadow-md shadow-neutral-grayish-blue p-3 rounded-lg hover:bg-orange-300 hover:text-white transition-all hover:translate-x-1`}
-            key={c}
-            onClick={() => setCurrentCategory(c)}
+            key={key}
+            onClick={() => {
+              if (setIsClicked) {
+                setIsClicked((prev) => !prev);
+              }
+              setCurrentCategory(value);
+            }}
           >
-            {c}
+            {key}
           </button>
         ))}
       </div>

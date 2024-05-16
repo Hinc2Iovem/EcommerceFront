@@ -13,3 +13,7 @@ export const axiosPrivate = axios.create({
   },
   withCredentials: true,
 });
+
+export const apiFakeStore = axios.create({
+  baseURL: "https://fakestoreapi.com",
+});

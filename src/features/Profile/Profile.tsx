@@ -1,27 +1,33 @@
-import { List, ListPlus } from "lucide-react";
+import { Gem, ListPlus } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header/Header";
-import { CATEGORIES } from "../../const/PillsCategories";
+import { CATEGORIES_SELLER } from "../../const/CATEGORIES_SELLER";
+import { CATEGORIES_WITHOUT_SUBCATEGORIES } from "../../const/PillsCategories";
+import useGetUser from "../../hooks/Profile/useGetUser";
 import ButtonHoverPromptModal from "../shared/ButtonAsideHoverPromtModal/ButtonHoverPromptModal";
 import LightBox from "../shared/LightBox";
-import ProfileProductsSide from "./ProfileProductsSide";
-import ProfileUserSide from "./ProfileUserSide";
 import SellingProductsListModal from "./ForSellers/SellingProductsListModal";
 import ProfileFooter from "./ProfileFooter";
-import { Gem } from "lucide-react";
+import ProfileProductsSide from "./ProfileProductsSide";
+import ProfileUserSide from "./ProfileUserSide";
 
 export default function Profile() {
-  const [role, setRole] = useState("Admin");
-  const [currentCategory, setCurrentCategory] = useState(CATEGORIES.All);
+  const [currentCategory, setCurrentCategory] = useState(
+    CATEGORIES_WITHOUT_SUBCATEGORIES.All
+  );
   const [isLightBox, setIsLightBox] = useState(false);
   const [showProdactsListModal, setShowProdactsListModal] = useState(false);
-  useState(false);
+  const { roles, _id: userId, balance, username } = useGetUser();
+  const [currentCategoryUser, setCurrentCategoryUser] = useState(
+    CATEGORIES_SELLER.SELLING_PRODUCTS
+  );
+
   return (
     <>
       <section
         className={`h-full flex flex-col ${
-          role !== "seller" ? "justify-between" : ""
+          roles?.includes("Seller") ? "" : "justify-between"
         }  items-center`}
       >
         <Header
@@ -32,7 +38,9 @@ export default function Profile() {
           <div className="flex items-center justify-between">
             <div
               className={`${
-                role === "Admin" || role === "Moderator" ? "visible" : "hidden"
+                roles?.includes("Admin") || roles?.includes("Moderator")
+                  ? "visible"
+                  : "hidden"
               } mb-[3rem] flex gap-[.5rem]`}
             >
               <Link to="/permissions">
@@ -49,7 +57,7 @@ export default function Profile() {
 
             <div
               className={`${
-                role === "seller" ? "visible" : "hidden"
+                roles?.includes("Seller") ? "visible" : "hidden"
               } mb-[3rem] flex gap-[.5rem] ml-auto`}
             >
               <Link to="/add/products">
@@ -62,7 +70,7 @@ export default function Profile() {
                   <ListPlus />
                 </ButtonHoverPromptModal>
               </Link>
-              <ButtonHoverPromptModal
+              {/* <ButtonHoverPromptModal
                 className="bg-white m-0 shadow-md hover:bg-primary-orange font-medium text-[1.5rem]"
                 variant="rectangleWithShadow"
                 contentName="Products For Sale"
@@ -73,20 +81,28 @@ export default function Profile() {
                 }}
               >
                 <List />
-              </ButtonHoverPromptModal>
+              </ButtonHoverPromptModal> */}
             </div>
           </div>
 
           <div className="flex gap-[2rem] justify-between md:flex-row flex-col">
             <ProfileUserSide
-              role={role}
+              roles={roles}
+              currentCategoryUser={currentCategoryUser}
+              setCurrentCategoryUser={setCurrentCategoryUser}
+              username={username}
               currentCategory={currentCategory}
               setCurrentCategory={setCurrentCategory}
+              balance={balance}
             />
-            <ProfileProductsSide role={role} />
+            <ProfileProductsSide
+              userId={userId}
+              currentCategoryUser={currentCategoryUser}
+              currentCategory={currentCategory}
+            />
           </div>
         </div>
-        <ProfileFooter setRole={setRole} role={role} />
+        <ProfileFooter userId={userId} roles={roles} />
       </section>
 
       <LightBox
@@ -99,6 +115,7 @@ export default function Profile() {
       <SellingProductsListModal
         isLightBox={isLightBox}
         showProdactsListModal={showProdactsListModal}
+        userId={userId}
       />
     </>
   );

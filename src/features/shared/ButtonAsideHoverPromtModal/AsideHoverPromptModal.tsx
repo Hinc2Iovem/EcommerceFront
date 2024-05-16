@@ -38,6 +38,7 @@ export default function AsideHoverPromptModal({
   showAsidePrompt,
   positionByAbscissa,
   position,
+  asideClasses,
   ...props
 }: AsideHoverPromptModalProps) {
   const clickToOpenModal = hideModal ? "hidden" : "block";
@@ -55,7 +56,8 @@ export default function AsideHoverPromptModal({
         clickToOpenModal,
         hoverOnButtonToOpenAsideModal,
         currentPosition,
-        wrapperDivPositionAbsolute
+        wrapperDivPositionAbsolute,
+        asideClasses
       )}
     >
       {contentName}

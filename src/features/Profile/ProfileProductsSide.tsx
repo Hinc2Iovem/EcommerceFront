@@ -1,41 +1,134 @@
-import { Pencil, Trash2, User2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ProductTypes } from "../AddProducts/ProductTypes";
 import SearchBar from "../shared/SearchBar";
+import {
+  getBoughtProductsByUserId,
+  getProductsByUserId,
+  getSoldProductsByUserId,
+} from "./profileQueries";
+import useDebounce from "../../hooks/useDebounce";
+import FormatCurrency from "../../utilities/FormatCurrency";
+import { Link } from "react-router-dom";
 
 type ProfileProductsSideTypes = {
-  role: string;
+  userId: string;
+  currentCategoryUser: string;
+  currentCategory: string;
 };
 
 export default function ProfileProductsSide({
-  role,
+  userId,
+  currentCategoryUser,
+  currentCategory,
 }: ProfileProductsSideTypes) {
+  const [value, setValue] = useState("");
+  const debouncedValue = useDebounce({ value, delay: 500 });
+
+  const [sellingProducts, setSellingProducts] = useState<ProductTypes[] | []>(
+    []
+  );
+  const [boughtProducts, setBoughtProducts] = useState<ProductTypes[] | []>([]);
+  const [soldProducts, setSoldProducts] = useState<ProductTypes[] | []>([]);
+
+  useEffect(() => {
+    getProductsByUserId({ userId }).then((r) => {
+      if (r) {
+        setSellingProducts(r);
+      }
+    });
+    getBoughtProductsByUserId({ userId }).then((r) => {
+      if (r) {
+        setBoughtProducts(r);
+      }
+    });
+    getSoldProductsByUserId({ userId }).then((r) => {
+      if (r) {
+        setSoldProducts(r);
+      }
+    });
+  }, [userId]);
+
+  const productsToDisplay: ProductTypes[] = useMemo(() => {
+    let filtered: ProductTypes[] = [];
+
+    if (currentCategoryUser === "Selling Products") {
+      filtered = sellingProducts;
+    } else if (currentCategoryUser === "Bought Products") {
+      filtered = boughtProducts;
+    } else if (currentCategoryUser === "Sold Products") {
+      filtered = soldProducts;
+    }
+
+    if (currentCategory !== "All") {
+      filtered = filtered.filter((p) =>
+        p.category
+          .map((c) => c.toLowerCase())
+          .includes(currentCategory.toLowerCase())
+      );
+    }
+    if (debouncedValue) {
+      filtered = filtered.filter(
+        (p) =>
+          p.title
+            .trim()
+            .toLowerCase()
+            .includes(debouncedValue.trim().toLowerCase()) ||
+          p.description
+            .trim()
+            .toLowerCase()
+            .includes(debouncedValue.trim().toLowerCase())
+      );
+    }
+    return filtered;
+  }, [
+    sellingProducts,
+    boughtProducts,
+    soldProducts,
+    currentCategoryUser,
+    currentCategory,
+    debouncedValue,
+  ]);
+
   return (
     <div className="flex-grow">
-      <SearchBar />
+      <SearchBar setValue={setValue} />
       <div className="grid grid-cols-[repeat(auto-fill,minmax(25rem,1fr))] grid-rows-[repeat(auto-fit,minmax(30rem,1fr))] p-3 gap-3 justify-items-center items-center">
-        <div className="bg-white w-full h-full overflow-hidden p-[1rem] rounded-lg border-primary-pastel-blue border-[3px] border-dotted flex flex-col gap-[1rem] justify-between">
-          <User2 className="self-center h-[5rem] w-[5rem]" />
-          <div className="flex flex-col gap-[.3rem]">
-            <div className="mb-[3rem] font-medium">
-              <h5>Title</h5>
-              <h5>Price</h5>
-            </div>
-            <div
-              className={`${
-                role === "seller" ? "flex flex-col gap-[.5rem]" : "hidden"
-              }`}
-            >
-              <h4 className="font-medium">Id</h4>
-              <div className="flex items-center gap-[1px]">
-                <button className="w-[50%] self-center border-[1px] transition-all border-black hover:text-white p-[.1rem] active:scale-[.97] rounded-md hover:bg-red-300">
-                  <Trash2 className="m-auto" />
-                </button>
-                <button className="w-[50%] border-[1px] border-black transition-all hover:text-white p-[.1rem] active:scale-[.97] rounded-md hover:bg-orange-300">
-                  <Pencil className="m-auto" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        {productsToDisplay.map((p) => (
+          <ProfileProductItem key={p._id} product={p} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+type ProfileProductItemTypes = {
+  product: ProductTypes;
+};
+
+function ProfileProductItem({ product }: ProfileProductItemTypes) {
+  return (
+    <div className="bg-white w-full h-full overflow-hidden p-[1rem] rounded-lg border-primary-pastel-blue border-[3px] border-dotted flex flex-col gap-[1rem] justify-between">
+      <img
+        src={product.frontImg}
+        alt={product.title}
+        className="w-full object-contain"
+      />
+      <div className="flex flex-col gap-[.3rem]">
+        <Link
+          to={`/products/${product._id}`}
+          className="font-medium hover:opacity-80 transition-all"
+        >
+          <h5>{product.title}</h5>
+        </Link>
+
+        <p className=" text-gray-700">
+          {product.description.length > 300
+            ? product.description.substring(0, 300) + "..."
+            : product.description}
+        </p>
+        <h5 className="font-medium text-[1.4rem]">
+          Price: {FormatCurrency(Number(product.price))}
+        </h5>
       </div>
     </div>
   );

@@ -1,3 +1,5 @@
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { Link } from "react-router-dom";
 
@@ -22,6 +24,8 @@ export default function RegisterFormInfo({
   errors,
   register,
 }: RegisterFormInfoProps) {
+  const [showPwd, setShowPwd] = useState(false);
+  const [showConfirmPwd, setShowConfirmPwd] = useState(false);
   return (
     <div
       className={`${
@@ -61,50 +65,73 @@ export default function RegisterFormInfo({
             {errors.username?.message}
           </span>
         )}
-        <label
-          htmlFor="password"
-          className="text-primary-marine-blue font-normal text-[2rem]"
-        >
-          Password
-        </label>
-        <input
-          id="password"
-          className="p-3 text-[2rem] rounded-xl outline-none border-[1px] border-black"
-          type="password"
-          placeholder="Very Strong Password"
-          {...register("password")}
-          aria-describedby="pwdnote"
-        />
-        {errors.password && (
-          <span
-            id="pwdnote"
-            className=" text-red-500 font-medium text-[1.2rem]"
+        <div className="w-full max-w-[40rem] relative">
+          <label
+            htmlFor="password"
+            className="text-primary-marine-blue font-normal text-[2rem]"
           >
-            {errors.password?.message}
-          </span>
-        )}
-        <label
-          htmlFor="confirmPassword"
-          className="text-primary-marine-blue font-normal text-[2rem]"
-        >
-          Confirm Password
-        </label>
-        <input
-          id="confirmPassword"
-          className="p-3 text-[2rem] rounded-xl  outline-none border-[1px] border-black"
-          type="password"
-          placeholder="Very Strong Password"
-          {...register("confirmPassword")}
-          aria-describedby="confirmnote"
-        />
-        {errors.confirmPassword && (
-          <span
-            id="confirmnote"
-            className=" text-red-500 font-medium text-[1.2rem]"
+            Password
+          </label>
+          <div className="relative w-full">
+            <input
+              id="password"
+              className="p-3 text-[2rem] rounded-xl outline-none border-[1px] border-black w-full"
+              type={`${showPwd ? "text" : "password"}`}
+              placeholder="Very Strong Password"
+              {...register("password")}
+              aria-describedby="pwdnote"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPwd((prev) => !prev)}
+              className="absolute right-[1rem] top-1/4 cursor-pointer hover:text-gray-700 active:scale-[0.98] hover:scale-[1.02] transition-all"
+            >
+              {showPwd ? <Eye /> : <EyeOff />}
+            </button>
+          </div>
+
+          {errors.password && (
+            <span
+              id="pwdnote"
+              className=" text-red-500 font-medium text-[1.2rem]"
+            >
+              {errors.password?.message}
+            </span>
+          )}
+        </div>
+        <div className="w-full max-w-[40rem] relative">
+          <label
+            htmlFor="confirmPassword"
+            className="text-primary-marine-blue font-normal text-[2rem]"
           >
-            {errors.confirmPassword?.message}
-          </span>
-        )}
+            Confirm Password
+          </label>
+          <div className="relative w-full">
+            <input
+              id="confirmPassword"
+              className="p-3 text-[2rem] rounded-xl  outline-none border-[1px] border-black w-full"
+              type={`${showConfirmPwd ? "text" : "password"}`}
+              placeholder="Very Strong Password"
+              {...register("confirmPassword")}
+              aria-describedby="confirmnote"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPwd((prev) => !prev)}
+              className="absolute right-[1rem] top-1/4 cursor-pointer hover:text-gray-700 active:scale-[0.98] hover:scale-[1.02] transition-all"
+            >
+              {showConfirmPwd ? <Eye /> : <EyeOff />}
+            </button>
+          </div>
+          {errors.confirmPassword && (
+            <span
+              id="confirmnote"
+              className=" text-red-500 font-medium text-[1.2rem]"
+            >
+              {errors.confirmPassword?.message}
+            </span>
+          )}
+        </div>
       </div>
 
       <button

@@ -1,29 +1,29 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { becomeSeller } from "../profileQueries";
 
 type SellerAgreementTypes = {
   isLightBox: boolean;
   setIsLightBox: React.Dispatch<React.SetStateAction<boolean>>;
-  setRole: React.Dispatch<React.SetStateAction<string>>;
+  userId: string;
 };
 
 export default function SellerAgreement({
   isLightBox,
   setIsLightBox,
-  setRole,
+  userId,
 }: SellerAgreementTypes) {
   const navigate = useNavigate();
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   const handleAgreement = async () => {
     if (isConfirmed) {
+      console.log(userId);
+      becomeSeller({ userId });
       setIsLightBox(false);
-      setRole("seller");
       navigate("/profile/1");
-      console.log("good");
     }
   };
-  console.log(isConfirmed);
 
   return (
     <aside

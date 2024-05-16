@@ -38,17 +38,19 @@ export default function RegisterForm({
     if (isValid) {
       try {
         const res = await axiosPublic.post(
-          "/register",
-          JSON.stringify({ user: data.username, pwd: data.password }),
+          "/auth/register",
+          JSON.stringify({ username: data.username, password: data.password }),
           {
             headers: {
               "Content-Type": "application/json",
             },
-            withCredentials: true,
           }
         );
-        const accessToken = res.data?.accessToken;
-        setAuth({ user: data.username, accessToken });
+        // const accessToken = res.data?.accessToken;
+        localStorage.setItem("userId", res.data?._id);
+        console.log(res.data);
+
+        // setAuth({ user: data.username, accessToken });
         navigate(from, { replace: true });
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {

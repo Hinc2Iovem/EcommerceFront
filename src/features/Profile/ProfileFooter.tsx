@@ -3,25 +3,25 @@ import LightBox from "../shared/LightBox";
 import SellerAgreement from "./ForSellers/SellerAgreement";
 
 type ProfileFooterTypes = {
-  role: string;
-  setRole: React.Dispatch<React.SetStateAction<string>>;
+  roles: string[];
+  userId: string;
 };
 
-export default function ProfileFooter({ role, setRole }: ProfileFooterTypes) {
+export default function ProfileFooter({ roles, userId }: ProfileFooterTypes) {
   const [isLightBox, setIsLightBox] = useState(false);
 
   return (
     <>
       <SellerAgreement
-        setRole={setRole}
         isLightBox={isLightBox}
         setIsLightBox={setIsLightBox}
+        userId={userId}
       />
       <LightBox isLightBox={isLightBox} setIsLightBox={setIsLightBox} />
 
       <footer
         className={` ${
-          role !== "seller" ? "visible" : "hidden"
+          roles?.includes("Seller") ? "hidden" : "visible"
         } w-full bg-white p-[.5rem] mt-auto`}
       >
         <div className="max-w-[146rem] m-auto p-[1rem] flex items-center justify-between">

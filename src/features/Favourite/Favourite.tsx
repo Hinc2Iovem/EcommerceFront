@@ -17,17 +17,17 @@ export default function Favourite() {
         <SearchBar />
         <div className="flex flex-col gap-[1.5rem]">
           <div className="md:flex hidden gap-[.5rem] justify-center">
-            {Object.values(CATEGORIES).map((c) => (
+            {Object.entries(CATEGORIES).map(([key, value]) => (
               <button
-                key={c}
-                onClick={() => setCurrentCategory(c)}
+                key={key}
+                onClick={() => setCurrentCategory(value)}
                 className={`${
-                  c === currentCategory
+                  value === currentCategory
                     ? "bg-green-400 hover:opacity-100 text-white"
                     : "bg-white hover:bg-green-300"
                 } outline-white p-[1rem] shadow-sm shadow-neutral-grayish-blue hover:translate-x-1 active:scale-[.97] hover:opacity-90 flex font-medium items-center gap-[.4rem] transition-all rounded-lg hover:p-[1rem]  hover:text-white`}
               >
-                {c}
+                {key}
               </button>
             ))}
           </div>

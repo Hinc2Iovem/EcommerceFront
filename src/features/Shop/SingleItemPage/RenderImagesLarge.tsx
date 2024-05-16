@@ -10,7 +10,7 @@ export default function RenderImagesLarge({
 }: RenderImagesLargeProps) {
   return (
     <img
-      className={` rounded-xl object-cover w-full shadow-md shadow-neutral-dark-grayish-blue h-full hover:scale-[1.01] cursor-pointer transition-all`}
+      className={`rounded-xl max-h-[11.5rem] object-contain shadow-md shadow-neutral-dark-grayish-blue h-full hover:scale-[1.01] cursor-pointer transition-all`}
       src={img}
       alt={title}
       onClick={() => setIsLightBox(true)}

@@ -113,7 +113,10 @@ export default function LoginForm() {
 
         <div className="md:bottom-0 md:left-0 bottom-5 left-[5rem] md:absolute">
           <h4>Do not have an account?</h4>
-          <Link to="/" className="hover:text-primary-purplish-blue text-[2rem]">
+          <Link
+            to="/register"
+            className="hover:text-primary-purplish-blue text-[2rem]"
+          >
             Sign Up
           </Link>
         </div>

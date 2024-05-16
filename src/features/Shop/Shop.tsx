@@ -1,7 +1,9 @@
-import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import Header from "../../components/Header/Header";
 import { CATEGORIES } from "../../const/PillsCategories";
+import useAllKrogerProducts from "../../hooks/useAllKrogerProducts";
+import useFetchOnLimit from "../../hooks/useFetchOnLimit";
+import RenderCategories from "./RenderCategories";
 import SingleItem from "./SingleItem";
 
 export type ProductTypes = {
@@ -19,57 +21,53 @@ export type ProductTypes = {
 
 export default function Shop() {
   const [currentCategory, setCurrentCategory] = useState(CATEGORIES.All);
-  const [products, setProducts] = useState<ProductTypes[]>();
-  const rerenderRef = useRef(true);
-  console.log(products);
+  const [subCategory, setSubCategory] = useState("");
+  const [products, setProducts] = useState<ProductTypes[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [limit, setLimit] = useState(0);
+  const [isClicked, setIsClicked] = useState(false);
+  const scrollTriggerRef = useRef<HTMLDivElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (rerenderRef.current) {
-      const handler = async () => {
-        const res = await axios
-          .get<ProductTypes[]>("https://fakestoreapi.com/products")
-          .then((res) => res.data);
-        setProducts(res);
-      };
+    scrollRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [isClicked]);
 
-      handler();
-    }
+  console.log(products);
 
-    return () => {
-      rerenderRef.current = false;
-    };
-  }, []);
+  useAllKrogerProducts({
+    limit,
+    setLoading,
+    setProducts,
+    currentCategory,
+    subCategory,
+  });
+  useFetchOnLimit({ loading, scrollTriggerRef, setLimit });
 
   if (!products) {
     return <h2>Loading...</h2>;
   }
 
   return (
-    <section>
+    <section ref={scrollRef}>
       <Header
         currentCategory={currentCategory}
+        setIsClicked={setIsClicked}
         setCurrentCategory={setCurrentCategory}
       />
       <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] grid-rows-[repeat(auto-fit,50rem)] p-3 gap-3 bg-neutral-magnolia ">
-        <div
-          className={`md:flex hidden md:row-span-12 bg-white h-fit flex-col gap-[1rem] p-[1.5rem] rounded-lg shadow-sm sticky top-[90px]`}
-        >
-          {Object.values(CATEGORIES).map((c) => (
-            <button
-              key={c}
-              onClick={() => setCurrentCategory(c)}
-              className={`${
-                c === currentCategory
-                  ? "bg-primary-orange text-white p-[1rem]"
-                  : ""
-              } hover:opacity-90 flex font-medium items-center gap-[.4rem] transition-all rounded-lg hover:p-[1rem] hover:bg-primary-orange hover:text-white`}
-            >
-              {c}
-            </button>
-          ))}
-        </div>
+        <RenderCategories
+          currentCategory={currentCategory}
+          setCurrentCategory={setCurrentCategory}
+          setIsClicked={setIsClicked}
+          setSubCurrentCategory={setSubCategory}
+          subCurrentCategory={subCategory}
+        />
         {products && products.map((p) => <SingleItem key={p.id} {...p} />)}
       </div>
+      <div ref={scrollTriggerRef} className="h-[10rem] w-full"></div>
     </section>
   );
 }

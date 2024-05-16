@@ -20,17 +20,17 @@ export default function Cart() {
             className={`flex md:w-fit w-full flex-shrink-0 md:row-span-12 md:col-span-1 md:flex-col gap-[3rem] sticky top-[90px] md:items-start items-center`}
           >
             <div className="bg-white md:flex hidden flex-col gap-[1rem] shadow-sm p-[1.5rem] rounded-lg w-full">
-              {Object.values(CATEGORIES).map((c) => (
+              {Object.entries(CATEGORIES).map(([key, value]) => (
                 <button
-                  key={c}
-                  onClick={() => setCurrentCategory(c)}
+                  key={key}
+                  onClick={() => setCurrentCategory(value)}
                   className={`${
-                    c === currentCategory
+                    value === currentCategory
                       ? "bg-primary-orange text-white p-[1rem]"
                       : ""
                   } hover:opacity-90 flex font-medium items-center gap-[.4rem] transition-all rounded-lg hover:p-[1rem] hover:bg-primary-orange hover:text-white`}
                 >
-                  {c}
+                  {key}
                 </button>
               ))}
             </div>

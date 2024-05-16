@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge";
 import AsideHoverPromptModal from "./AsideHoverPromptModal";
 
 const ButtonHoverPromptModalStyles = cva(
-  ["z-[999] transition-all hover:translate-x-[5%] outline-none w-fit"],
+  ["z-[999] transition-all hover:translate-x-[1%] outline-none w-fit"],
   {
     variants: {
       variant: {
@@ -29,6 +29,7 @@ export interface hidePromptModal {
   contentName: string;
   positionByAbscissa: "left" | "right";
   position?: "absolute" | "relative" | "fixed" | "sticky";
+  asideClasses?: string;
 }
 
 interface exclusivelyButtonTypes extends hidePromptModal {
@@ -51,6 +52,7 @@ export default function ButtonHoverPromptModal({
   marginAutoSide,
   position,
   positionForDiv,
+  asideClasses,
   ...props
 }: ButtonHoverPromptModalProps) {
   const [showAsidePrompt, setShowAsidePrompt] = useState(false);
@@ -77,6 +79,7 @@ export default function ButtonHoverPromptModal({
         showAsidePrompt={showAsidePrompt}
         positionByAbscissa={positionByAbscissa}
         position={position}
+        asideClasses={asideClasses}
       />
     </div>
   );

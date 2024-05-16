@@ -7,12 +7,14 @@ type HeaderTypes = {
   currentCategory?: string;
   setCurrentCategory?: React.Dispatch<React.SetStateAction<string>>;
   showPillsOrNot?: boolean;
+  setIsClicked?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function Header({
   currentCategory = "All",
   setCurrentCategory = () => {},
   showPillsOrNot = true,
+  setIsClicked,
 }: HeaderTypes) {
   const [expandBurgerMenu, setExpandBurgerMenu] = useState(false);
 
@@ -27,6 +29,7 @@ export default function Header({
           <HeaderPills
             setCurrentCategory={setCurrentCategory}
             currentCategory={currentCategory}
+            setIsClicked={setIsClicked}
           />
         </div>
       </header>
