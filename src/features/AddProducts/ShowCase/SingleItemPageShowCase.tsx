@@ -1,44 +1,71 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import characteristics from "../../../assets/images/SingleItemPage/characteristics.png";
-import description from "../../../assets/images/SingleItemPage/description.png";
-import img1 from "../../../assets/images/testingSingleItemPage/pexels-avonne-stalling-3916420.jpg";
-import img2 from "../../../assets/images/testingSingleItemPage/pexels-josh-hild-17685567.jpg";
-import img3 from "../../../assets/images/testingSingleItemPage/pexels-paige-thompson-19841521.jpg";
-import Header from "../../../components/Header/Header";
 import { MATCHMEDIA } from "../../../const/MatchMedia";
 import useMatchMedia from "../../../hooks/useMatchMedia";
 import ButtonHoverPromptModal from "../../shared/ButtonAsideHoverPromtModal/ButtonHoverPromptModal";
+import RenderImagesLarge from "../../Shop/SingleItemPage/RenderImagesLarge";
+import RenderImages from "../../Shop/SingleItemPage/RenderImages";
+import SingleItemDescription from "../../Shop/SingleItemPage/SingleItemDescription";
+import SingleItemAddToCart from "../../Shop/SingleItemPage/SingleItemAddToCart";
 import LightBox from "../../shared/LightBox";
-import RenderImages from "./RenderImages";
-import RenderImagesLarge from "./RenderImagesLarge";
-import ShowImagesOnLightBox from "./ShowImagesOnLightBox";
-import SingleItemAddToCart from "./SingleItemAddToCart";
-import SingleItemDescription from "./SingleItemDescription";
-import useGetProductById from "./useGetProductById";
-// import SingleItemCharacteristics from "./SingleItemCharacteristicsShowCase";
+import ShowImagesOnLightBox from "../../Shop/SingleItemPage/ShowImagesOnLightBox";
+import descriptionImg from "../../../assets/images/SingleItemPage/description.png";
+import characteristicsImg from "../../../assets/images/SingleItemPage/characteristics.png";
+import SingleItemCharacteristicsShowCase from "./SingleItemCharacteristicsShowCase";
 
-const imgs = Array.from([img2, img3, img1]);
+type SingleItemPageShowCaseTypes = {
+  setCurrentPage: React.Dispatch<React.SetStateAction<string>>;
+  currentPage: string;
+  preview: string | ArrayBuffer | null;
+  price: number;
+  brandName: string;
+  title: string;
+  category: string;
+  description: string;
+  imgsPreview: string[] | ArrayBuffer | null;
+  allMainTitles: string[];
+  allSubTitles: string[];
+  allTexts: string[];
+  amountOfMainInfoAll: number[];
+};
 
-export default function SingleItemPage() {
+export default function SingleItemPageShowCase({
+  currentPage,
+  setCurrentPage,
+  preview,
+  category,
+  price,
+  title,
+  imgsPreview,
+  description,
+  allMainTitles,
+  allSubTitles,
+  allTexts,
+  amountOfMainInfoAll,
+}: SingleItemPageShowCaseTypes) {
   const { productId } = useParams();
-  const product = useGetProductById(Number(productId));
   const [currentImage, setCurrentImage] = useState(1);
   const [isLightBox, setIsLightBox] = useState(false);
   const mobile = useMatchMedia(MATCHMEDIA.Mobile);
+  // @ts-expect-error Fuck This Stuff
+  const allImgs = imgsPreview ? [preview, ...imgsPreview] : [""];
 
   const [showDescription, setShowDescription] = useState(true);
 
-  if (!product) {
-    return <h2>Loading...</h2>;
-  }
-  const allImgs = [product.image, ...imgs];
-
   return (
     <>
-      <Header showPillsOrNot={false} />
-      <div className={"bg-neutral-magnolia p-[1rem]"}>
+      <div
+        className={`bg-neutral-magnolia p-[1rem] ${
+          currentPage === "result" ? "" : "hidden"
+        }`}
+      >
+        <button
+          onClick={() => setCurrentPage("form")}
+          className="transition-all ml-auto self-end shadow-sm rounded-md p-[1rem] active:scale-[.97] bg-white hover:text-white hover:bg-primary-orange text-gray-700 font-medium"
+        >
+          Back To Form
+        </button>
         <div
           className={`bg-white ${
             showDescription ? "items-center" : "md:items-start"
@@ -55,7 +82,7 @@ export default function SingleItemPage() {
               variant={"icon"}
               onClick={() => setShowDescription(true)}
             >
-              <img src={description} alt="description" className="w-full" />
+              <img src={descriptionImg} alt="description" className="w-full" />
             </ButtonHoverPromptModal>
             <ButtonHoverPromptModal
               contentName="Characteristics"
@@ -70,7 +97,7 @@ export default function SingleItemPage() {
               onClick={() => setShowDescription(false)}
             >
               <img
-                src={characteristics}
+                src={characteristicsImg}
                 alt="characteristics"
                 className="w-full"
               />
@@ -80,22 +107,25 @@ export default function SingleItemPage() {
             <div className="md:grid grid-cols-4 gap-6 hidden max-w-[35rem] min-w-[20rem]">
               <img
                 className={`col-[1/5] rounded-xl h-full object-cover w-full shadow-md shadow-neutral-dark-grayish-blue hover:scale-[1.01] cursor-pointer transition-all`}
-                src={product.image}
-                alt={product.title}
+                src={preview as string}
+                alt={title}
                 onClick={() => setIsLightBox(true)}
               />
               {allImgs.map((img) => (
                 <RenderImagesLarge
                   key={img}
                   img={img}
-                  title={product.title}
+                  title={"title"}
                   setIsLightBox={setIsLightBox}
                 />
               ))}
             </div>
           ) : (
             <div className="flex gap-6 max-w-[35rem] relative  h-full transition-all ">
-              <RenderImages image={product.image} currentImg={currentImage} />
+              <RenderImages
+                image={preview as string}
+                currentImg={currentImage}
+              />
               <button
                 className="absolute top-[calc(50%-1.2rem)] left-[1rem] flex items-center justify-center w-[4rem] h-[4rem] bg-white rounded-full"
                 onClick={() =>
@@ -134,22 +164,28 @@ export default function SingleItemPage() {
               showDescription ? "flex-col " : "flex-col-reverse"
             } flex md:h-[60%] max-w-[50rem] w-full`}
           >
-            {/* <SingleItemCharacteristics showDescription={showDescription} /> */}
-            <SingleItemDescription
-              category={product.category}
-              description={product.description}
-              price={product.price}
+            <SingleItemCharacteristicsShowCase
               showDescription={showDescription}
-              title={product.title}
+              allMainTitles={allMainTitles}
+              allSubTitles={allSubTitles}
+              allTexts={allTexts}
+              amountOfMainInfoAll={amountOfMainInfoAll}
+            />
+            <SingleItemDescription
+              category={category}
+              description={description}
+              price={price}
+              showDescription={showDescription}
+              title={title}
             />
             <SingleItemAddToCart
-              category={product.category}
-              description={product.description}
-              image={product.image}
-              price={product.price}
+              category={category}
+              description={description}
+              image={preview as string}
+              price={price}
               productId={productId as string}
               rating={2}
-              title={product.title}
+              title={title}
             />
           </div>
         </div>

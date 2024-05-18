@@ -1,4 +1,5 @@
 import { CATEGORIES } from "../../const/PillsCategories";
+import EachCategory from "./EachCategory";
 
 type RenderCategoriesTypes = {
   setIsClicked: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,47 +24,16 @@ export default function RenderCategories({
         ([key, value]: [string, string | Record<string, string>]) => {
           if (typeof value === "object") {
             return (
-              <div key={key}>
-                <button
-                  onClick={() => {
-                    setIsClicked((prev) => !prev);
-                    setCurrentCategory(key);
-                    setSubCurrentCategory("");
-                  }}
-                  className={`${
-                    key === currentCategory
-                      ? "bg-primary-orange text-white p-[1rem]"
-                      : ""
-                  } hover:opacity-90 flex font-medium items-center gap-[.4rem] transition-all rounded-lg hover:p-[1rem] hover:bg-primary-orange hover:text-white w-full`}
-                >
-                  {key}
-                </button>
-                <ul
-                  className={`${
-                    key === currentCategory ? "" : "hidden"
-                  } flex flex-col gap-[.5rem] ml-[.5rem]`}
-                >
-                  {Object.entries(value).map(([subKey]) => {
-                    return (
-                      <li key={subKey}>
-                        <button
-                          onClick={() => {
-                            setIsClicked((prev) => !prev);
-                            setSubCurrentCategory(subKey);
-                          }}
-                          className={`${
-                            subKey === subCurrentCategory
-                              ? "shadow-inner shadow-gray-600 text-black p-[1rem]"
-                              : " shadow-inner  p-[.5rem] text-gray-700 shadow-gray-500 hover:p-[.7rem] "
-                          } flex font-medium items-center gap-[.4rem] transition-all rounded-lg w-full`}
-                        >
-                          {subKey}
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
+              <EachCategory
+                key={key}
+                k={key}
+                value={value}
+                currentCategory={currentCategory}
+                setCurrentCategory={setCurrentCategory}
+                setIsClicked={setIsClicked}
+                setSubCurrentCategory={setSubCurrentCategory}
+                subCurrentCategory={subCurrentCategory}
+              />
             );
           } else {
             return (

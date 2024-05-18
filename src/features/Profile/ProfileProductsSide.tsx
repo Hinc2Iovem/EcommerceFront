@@ -115,7 +115,7 @@ function ProfileProductItem({ product }: ProfileProductItemTypes) {
       />
       <div className="flex flex-col gap-[.3rem]">
         <Link
-          to={`/products/${product._id}`}
+          to={`/shop/${product._id}`}
           className="font-medium hover:opacity-80 transition-all"
         >
           <h5>{product.title}</h5>

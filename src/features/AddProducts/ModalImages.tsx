@@ -16,11 +16,13 @@ export default function ModalImages({
   imgsPreview,
   setImgsPreview,
 }: ModalImagesTypes) {
+  console.log(showImgsModal);
+
   return (
     <aside
       className={`${
         showImgsModal ? "" : "hidden"
-      } absolute bottom-[10rem] w-[calc(100%-2rem)] max-w-[70rem] h-[30rem] shadow-md p-[1rem] bg-white rounded-md `}
+      } fixed shadow-gray-400 z-[100] bottom-[10rem] w-[calc(100%-2rem)] max-w-[70rem] h-[30rem] shadow-md p-[1rem] bg-white rounded-md `}
     >
       <div className="w-full h-full border-[2px] border-gray-300 rounded-md overflow-auto p-[1rem]">
         <PreviewImgs

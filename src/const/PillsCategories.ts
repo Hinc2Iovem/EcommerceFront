@@ -24,8 +24,14 @@ export const CATEGORIES = {
 export type CATEGORIESTYPES = typeof CATEGORIES;
 
 export const CATEGORIES_FOR_CREATING_PRODUCTS = {
-  Men: "Men",
-  Women: "Women",
+  Men: {
+    Hats: "Hats",
+    Shoes: "Shoes",
+  },
+  Women: {
+    Heels: "Heels",
+    Purse: "Purse",
+  },
   Electronics: {
     Laptops: "Laptops",
     Smartphones: "Smartphones",
