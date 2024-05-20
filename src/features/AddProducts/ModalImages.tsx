@@ -18,6 +18,33 @@ export default function ModalImages({
 }: ModalImagesTypes) {
   console.log(showImgsModal);
 
+  const renderImgPreviews = () => {
+    const previews = [];
+    if (Array.isArray(imgsPreview)) {
+      for (let i = 0; i < 3; i++) {
+        previews.push(
+          <PreviewImgs
+            key={`${imgsPreview[i]}-${i}`}
+            imagePreview={imgsPreview[i]}
+            setImgsPreview={setImgsPreview}
+            currentIndex={i}
+            divClasses="shadow-md my-[1rem] w-full h-full relative"
+          />
+        );
+      }
+    } else if (imgsPreview) {
+      previews.push(
+        <PreviewImgs
+          key={`${imgsPreview}`}
+          imagePreview={imgsPreview}
+          setImgsPreview={setImgsPreview}
+          divClasses="shadow-md my-[1rem] w-full h-full relative"
+        />
+      );
+    }
+    return previews;
+  };
+
   return (
     <aside
       className={`${
@@ -25,27 +52,7 @@ export default function ModalImages({
       } fixed shadow-gray-400 z-[100] bottom-[10rem] w-[calc(100%-2rem)] max-w-[70rem] h-[30rem] shadow-md p-[1rem] bg-white rounded-md `}
     >
       <div className="w-full h-full border-[2px] border-gray-300 rounded-md overflow-auto p-[1rem]">
-        <PreviewImgs
-          divClasses="shadow-md my-[1rem] w-full h-full relative "
-          imagePreview={
-            Array.isArray(imgsPreview) ? imgsPreview[0] : imgsPreview
-          }
-          setImgsPreview={setImgsPreview}
-        />
-        <PreviewImgs
-          divClasses="shadow-md my-[1rem] w-full h-full relative "
-          imagePreview={
-            Array.isArray(imgsPreview) ? imgsPreview[1] : imgsPreview
-          }
-          setImgsPreview={setImgsPreview}
-        />
-        <PreviewImgs
-          divClasses="shadow-md my-[1rem] w-full h-full relative "
-          imagePreview={
-            Array.isArray(imgsPreview) ? imgsPreview[2] : imgsPreview
-          }
-          setImgsPreview={setImgsPreview}
-        />
+        {renderImgPreviews()}
       </div>
       <button
         onClick={() => setShowImgsModal(false)}

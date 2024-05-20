@@ -1,17 +1,17 @@
 import { useState } from "react";
-import { ShowArrowDownOrRight } from "../../Shop/SingleItemPage/Characteristics/RenderAllCharacteristics";
+import { ShowArrowDownOrRight } from "./RenderAllCharacteristics";
 
-type RenderAllSubTitlesAndTextsShowCaseTypes = {
+type RenderAllSubTitlesAndTextsTypes = {
   hideSubTitle: boolean;
   subTitle: string;
   text: string;
 };
 
-export default function RenderAllSubTitlesAndTextsShowCase({
+export default function RenderAllSubTitlesAndTexts({
   hideSubTitle,
   subTitle,
   text,
-}: RenderAllSubTitlesAndTextsShowCaseTypes) {
+}: RenderAllSubTitlesAndTextsTypes) {
   const [hideText, setHideText] = useState(false);
 
   return (

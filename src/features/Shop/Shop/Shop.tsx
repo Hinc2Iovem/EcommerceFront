@@ -1,30 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import Header from "../../components/Header/Header";
-import { CATEGORIES } from "../../const/PillsCategories";
-import useAllKrogerProducts from "../../hooks/useAllKrogerProducts";
-import useFetchOnLimit from "../../hooks/useFetchOnLimit";
+import Header from "../../../components/Header/Header";
+import { CATEGORIES } from "../../../const/PillsCategories";
+import useGetProducts from "../../../hooks/Products/useGetProducts";
 import RenderCategories from "./RenderCategories";
 import SingleItem from "./SingleItem";
-
-export type ProductTypes = {
-  category: string;
-  description: string;
-  id: number;
-  image: string;
-  price: number;
-  rating: {
-    rate: number;
-    count: number;
-  };
-  title: string;
-};
 
 export default function Shop() {
   const [currentCategory, setCurrentCategory] = useState(CATEGORIES.All);
   const [subCategory, setSubCategory] = useState("");
-  const [products, setProducts] = useState<ProductTypes[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [limit, setLimit] = useState(0);
+  const products = useGetProducts();
+  // const [loading, setLoading] = useState(false);
+  // const [limit, setLimit] = useState(0);
   const [isClicked, setIsClicked] = useState(false);
   const scrollTriggerRef = useRef<HTMLDivElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -37,14 +23,14 @@ export default function Shop() {
 
   console.log(products);
 
-  useAllKrogerProducts({
-    limit,
-    setLoading,
-    setProducts,
-    currentCategory,
-    subCategory,
-  });
-  useFetchOnLimit({ loading, scrollTriggerRef, setLimit });
+  // useAllKrogerProducts({
+  //   limit,
+  //   setLoading,
+  //   setProducts,
+  //   currentCategory,
+  //   subCategory,
+  // });
+  // useFetchOnLimit({ loading, scrollTriggerRef, setLimit });
 
   if (!products) {
     return <h2>Loading...</h2>;
@@ -65,7 +51,7 @@ export default function Shop() {
           setSubCurrentCategory={setSubCategory}
           subCurrentCategory={subCategory}
         />
-        {products && products.map((p) => <SingleItem key={p.id} {...p} />)}
+        {products && products.map((p) => <SingleItem key={p._id} {...p} />)}
       </div>
       <div ref={scrollTriggerRef} className="h-[10rem] w-full"></div>
     </section>

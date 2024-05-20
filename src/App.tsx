@@ -5,7 +5,7 @@ import Favourite from "./features/Favourite/Favourite";
 import Login from "./features/Login/Login";
 import Profile from "./features/Profile/Profile";
 import Register from "./features/Register/Register";
-import Shop from "./features/Shop/Shop";
+import Shop from "./features/Shop/Shop/Shop";
 import SingleItemPage from "./features/Shop/SingleItemPage/SingleItemPage";
 import Layout from "./pages/Layout";
 import LayoutCart from "./pages/LayoutCart";

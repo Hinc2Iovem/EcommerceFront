@@ -5,22 +5,21 @@ import plus from "../../assets/images/shared/plus.png";
 import AddCharacteristicsMainInfo from "./AddCharacteristicsMainInfo";
 
 type AddCharacteristicsMainTitleTypes = {
-  setAllSubTitles: React.Dispatch<React.SetStateAction<string[]>>;
-  setAllTexts: React.Dispatch<React.SetStateAction<string[]>>;
+  setAllSubTitles: React.Dispatch<React.SetStateAction<string[][]>>;
+  setAllTexts: React.Dispatch<React.SetStateAction<string[][]>>;
   setAllMainTitles: React.Dispatch<React.SetStateAction<string[]>>;
   setAmountOfMainInfoAll: React.Dispatch<React.SetStateAction<number[]>>;
-  currentIndex: number;
+  mainIndex: number;
 };
 export default function AddCharacteristicsMainTitle({
   setAllSubTitles,
   setAllTexts,
   setAllMainTitles,
   setAmountOfMainInfoAll,
-  currentIndex,
+  mainIndex,
 }: AddCharacteristicsMainTitleTypes) {
   const [mainTitle, setMainTitle] = useState("");
   const [hideBlock, setHideBLock] = useState(false);
-
   const [amountOfMainInfo, setAmountOfMainInfo] = useState(1);
 
   const renderMainInfoItems = () => {
@@ -28,7 +27,8 @@ export default function AddCharacteristicsMainTitle({
     for (let i = 0; i < amountOfMainInfo; i++) {
       items.push(
         <AddCharacteristicsMainInfo
-          currentIndex={i}
+          mainIndex={mainIndex}
+          subIndex={i}
           setAllSubTitles={setAllSubTitles}
           setAllTexts={setAllTexts}
           key={i}
@@ -41,10 +41,10 @@ export default function AddCharacteristicsMainTitle({
   useEffect(() => {
     setAllMainTitles((prev) => {
       const newTitles = [...prev];
-      newTitles[currentIndex] = mainTitle;
+      newTitles[mainIndex] = mainTitle;
       return newTitles;
     });
-  }, [mainTitle, setAllMainTitles, currentIndex]);
+  }, [mainTitle, setAllMainTitles, mainIndex]);
 
   return (
     <div className={`relative flex flex-col`}>
@@ -75,7 +75,7 @@ export default function AddCharacteristicsMainTitle({
             setAmountOfMainInfo((prev) => (prev += 1));
             setAmountOfMainInfoAll((prev) => {
               const allAmount = [...prev];
-              allAmount[currentIndex] += 1;
+              allAmount[mainIndex] += 1;
               return allAmount;
             });
           }}

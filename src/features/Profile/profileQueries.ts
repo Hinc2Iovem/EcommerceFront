@@ -1,6 +1,6 @@
 import { axiosPublic } from "../../api/axios";
-import { ProductTypes } from "../AddProducts/ProductTypes";
-import { UserTypes } from "./ProfileTypes";
+import { ProductTypes } from "../../types/ProductTypes";
+import { UserTypes } from "../../types/ProfileTypes";
 
 export const getUser = async ({ userId }: { userId: string }) => {
   try {

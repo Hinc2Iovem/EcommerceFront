@@ -4,6 +4,7 @@ import { useLayoutEffect, useState } from "react";
 
 export default function useMatchMedia(query: string) {
   const [matches, setMatches] = useState(false);
+
   useLayoutEffect(() => {
     const matchQueryList = window.matchMedia(query);
     const handleChange = (e: {
@@ -12,6 +13,7 @@ export default function useMatchMedia(query: string) {
       setMatches(e.matches);
     };
     matchQueryList.addEventListener("change", handleChange);
+    handleChange(matchQueryList);
     return () => {
       matchQueryList.removeEventListener("change", handleChange);
     };

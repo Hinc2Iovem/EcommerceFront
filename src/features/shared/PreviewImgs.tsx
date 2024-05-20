@@ -8,6 +8,7 @@ type PreviewImage = {
   >;
   imagePreview: string | ArrayBuffer | null;
   divClasses?: string;
+  currentIndex?: number;
   children?: React.ReactNode;
 };
 
@@ -15,6 +16,7 @@ export default function PreviewImgs({
   setImgsPreview,
   imagePreview,
   divClasses,
+  currentIndex,
   children,
 }: PreviewImage) {
   const onDrop = useCallback(
@@ -26,7 +28,9 @@ export default function PreviewImgs({
           if (prevState === null) {
             return file.result as ArrayBuffer | null;
           } else if (Array.isArray(prevState)) {
-            return [...prevState, file.result as string];
+            const newImages = [...prevState];
+            newImages[currentIndex ? currentIndex : 0] = file.result as string;
+            return newImages;
           } else {
             return prevState;
           }
@@ -35,7 +39,7 @@ export default function PreviewImgs({
 
       file.readAsDataURL(acceptedFiles[0]);
     },
-    [setImgsPreview]
+    [setImgsPreview, currentIndex]
   );
 
   const { getRootProps, getInputProps } = useDropzone({

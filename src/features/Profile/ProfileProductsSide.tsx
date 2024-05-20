@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ProductTypes } from "../AddProducts/ProductTypes";
+import { ProductTypes } from "../../types/ProductTypes";
 import SearchBar from "../shared/SearchBar";
 import {
   getBoughtProductsByUserId,
@@ -61,9 +61,7 @@ export default function ProfileProductsSide({
 
     if (currentCategory !== "All") {
       filtered = filtered.filter((p) =>
-        p.category
-          .map((c) => c.toLowerCase())
-          .includes(currentCategory.toLowerCase())
+        p.category.toLowerCase().includes(currentCategory.toLowerCase())
       );
     }
     if (debouncedValue) {
@@ -113,15 +111,15 @@ function ProfileProductItem({ product }: ProfileProductItemTypes) {
         alt={product.title}
         className="w-full object-contain"
       />
-      <div className="flex flex-col gap-[.3rem]">
+      <div className="flex flex-col gap-[.3rem] w-full">
         <Link
           to={`/shop/${product._id}`}
-          className="font-medium hover:opacity-80 transition-all"
+          className="font-medium hover:opacity-80 transition-all w-full break-words"
         >
           <h5>{product.title}</h5>
         </Link>
 
-        <p className=" text-gray-700">
+        <p className=" text-gray-700 break-words">
           {product.description.length > 300
             ? product.description.substring(0, 300) + "..."
             : product.description}

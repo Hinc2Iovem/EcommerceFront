@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { getProductsByUserId } from "../../features/Profile/profileQueries";
-import { ProductTypes } from "../../features/AddProducts/ProductTypes";
+import { ProductTypes } from "../../types/ProductTypes";
 
-export default function useGetProductByUserId({ userId }: { userId: string }) {
+export default function useGetProductsByUserId({ userId }: { userId: string }) {
   const [products, setProducts] = useState<ProductTypes[] | []>([]);
 
   useEffect(() => {

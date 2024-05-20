@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 
 type AddCharacteristicsMainInfoTypes = {
-  setAllSubTitles: React.Dispatch<React.SetStateAction<string[]>>;
-  setAllTexts: React.Dispatch<React.SetStateAction<string[]>>;
-  currentIndex: number;
+  setAllSubTitles: React.Dispatch<React.SetStateAction<string[][]>>;
+  setAllTexts: React.Dispatch<React.SetStateAction<string[][]>>;
+  mainIndex: number;
+  subIndex: number;
 };
 
 export default function AddCharacteristicsMainInfo({
   setAllSubTitles,
   setAllTexts,
-  currentIndex,
+  mainIndex,
+  subIndex,
 }: AddCharacteristicsMainInfoTypes) {
   const [subTitle, setSubTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -17,18 +19,25 @@ export default function AddCharacteristicsMainInfo({
   useEffect(() => {
     setAllSubTitles((prev) => {
       const newSubTitles = [...prev];
-      newSubTitles[currentIndex] = subTitle;
+      if (!newSubTitles[mainIndex]) {
+        newSubTitles[mainIndex] = [];
+      }
+      newSubTitles[mainIndex][subIndex] = subTitle;
       return newSubTitles;
     });
-  }, [currentIndex, setAllSubTitles, subTitle]);
+  }, [mainIndex, subIndex, setAllSubTitles, subTitle]);
 
   useEffect(() => {
     setAllTexts((prev) => {
       const newTexts = [...prev];
-      newTexts[currentIndex] = description;
+      if (!newTexts[mainIndex]) {
+        newTexts[mainIndex] = [];
+      }
+      newTexts[mainIndex][subIndex] = description;
       return newTexts;
     });
-  }, [currentIndex, setAllTexts, description]);
+  }, [mainIndex, subIndex, setAllTexts, description]);
+
   return (
     <>
       <input

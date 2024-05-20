@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
-import RenderAllCharacteristics from "../../Shop/SingleItemPage/RenderAllCharacteristics";
+import RenderAllCharacteristicsShowCase from "./RenderAllCharacteristicsShowCase";
 
 type SingleItemCharacteristicsTypes = {
   showDescription: boolean;
   allMainTitles: string[];
-  allSubTitles: string[];
-  allTexts: string[];
-  amountOfMainInfoAll: number[];
+  allSubTitles: string[][];
+  allTexts: string[][];
 };
 
 export default function SingleItemCharacteristicsShowCase({
@@ -14,41 +12,29 @@ export default function SingleItemCharacteristicsShowCase({
   allMainTitles,
   allSubTitles,
   allTexts,
-  amountOfMainInfoAll,
 }: SingleItemCharacteristicsTypes) {
-  const [newAllSubTitles, setNewAllSubTitles] = useState<string[]>([]);
+  const renderCharacteristicsItems = () => {
+    return allMainTitles.map((mainTitle, index) => {
+      const subTitlesThisMainTitle = allSubTitles[index];
+      const textsThisMainTitle = allTexts[index];
 
-  useEffect(() => {
-    setNewAllSubTitles(allSubTitles);
-  }, [allSubTitles]);
-
-  console.log(allSubTitles);
-
+      return (
+        <RenderAllCharacteristicsShowCase
+          key={index}
+          mainTitle={mainTitle}
+          subTitlesForThisMainTitle={subTitlesThisMainTitle}
+          textsForThisMainTitle={textsThisMainTitle}
+        />
+      );
+    });
+  };
   return (
     <div
       className={`${
         showDescription ? "hidden" : ""
       } flex flex-col h-full gap-7 w-full text-start mt-[2rem]`}
     >
-      {newAllSubTitles?.map((mainTitle, index) => {
-        const subTitlesForThisMainTitle = allSubTitles.slice(
-          0,
-          amountOfMainInfoAll[index] + 1
-        );
-
-        const leftSubTitles = allSubTitles.slice(
-          amountOfMainInfoAll[index] + 1,
-          amountOfMainInfoAll.length
-        );
-        setNewAllSubTitles(leftSubTitles);
-        return (
-          <RenderAllCharacteristics
-            mainTitle={mainTitle}
-            key={mainTitle}
-            subTitlesForThisMainTitle={subTitlesForThisMainTitle}
-          />
-        );
-      })}
+      {renderCharacteristicsItems()}
     </div>
   );
 }

@@ -3,8 +3,8 @@ export type ProductTypes = {
   title: string;
   description: string;
   rating: number;
-  images: string[];
-  category: string[];
+  imgUrls: string[];
+  category: string;
   brand: string;
   userId: string;
   price: string;
@@ -12,14 +12,16 @@ export type ProductTypes = {
   isActive: boolean;
   frontImg: string;
   amountOfReports: number;
+  subCategory: string;
 };
 
 export type ProductBody = {
   title: string;
   description: string;
-  images: string[];
+  imgUrls: string[];
   category: string;
   brand: string;
   price: string;
   frontImg: string;
+  subCategory: string;
 };

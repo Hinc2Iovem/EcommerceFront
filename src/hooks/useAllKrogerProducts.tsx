@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getAllKrogerProducts } from "../features/Shop/shopQueries";
-import { ProductTypes } from "../features/Shop/Shop";
+import { getAllKrogerProducts } from "../features/Shop/Shop/shopQueries";
+import { ProductTypes } from "../features/Shop/Shop/Shop";
 
 type AllKrogerProductsTypes = {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -26,12 +26,12 @@ export default function useAllKrogerProducts({
         const currLimit = limit ? limit : 12;
         const currentCateg = currentCategory === "All" ? "" : currentCategory;
         const currentSubCategory = subCategory ? subCategory : "";
-        getAllKrogerProducts({
-          limit: currLimit,
-          category: currentCateg,
-          subCategory: currentSubCategory,
-        }).then((r) => setProducts(r));
-        setLoading(false);
+        // getAllKrogerProducts({
+        //   limit: currLimit,
+        //   category: currentCateg,
+        //   subCategory: currentSubCategory,
+        // }).then((r) => setProducts(r));
+        // setLoading(false);
       };
 
       handler();

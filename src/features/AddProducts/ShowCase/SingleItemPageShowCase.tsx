@@ -1,17 +1,17 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import characteristicsImg from "../../../assets/images/SingleItemPage/characteristics.png";
+import descriptionImg from "../../../assets/images/SingleItemPage/description.png";
 import { MATCHMEDIA } from "../../../const/MatchMedia";
 import useMatchMedia from "../../../hooks/useMatchMedia";
+import RenderImagesLarge from "../../Shop/SingleItemPage/ImagesComponents/RenderImagesLarge";
+import ShowImagesOnLightBox from "../../Shop/SingleItemPage/ImagesComponents/ShowImagesOnLightBox";
+import SingleItemDescription from "../../Shop/SingleItemPage/Description/SingleItemDescription";
 import ButtonHoverPromptModal from "../../shared/ButtonAsideHoverPromtModal/ButtonHoverPromptModal";
-import RenderImagesLarge from "../../Shop/SingleItemPage/RenderImagesLarge";
-import RenderImages from "../../Shop/SingleItemPage/RenderImages";
-import SingleItemDescription from "../../Shop/SingleItemPage/SingleItemDescription";
-import SingleItemAddToCart from "../../Shop/SingleItemPage/SingleItemAddToCart";
 import LightBox from "../../shared/LightBox";
-import ShowImagesOnLightBox from "../../Shop/SingleItemPage/ShowImagesOnLightBox";
-import descriptionImg from "../../../assets/images/SingleItemPage/description.png";
-import characteristicsImg from "../../../assets/images/SingleItemPage/characteristics.png";
+import RenderImagesShowCase from "./RenderImagesShowCase";
+import SingleItemAddToCartShowCase from "./SingleItemAddToCartShowCase";
 import SingleItemCharacteristicsShowCase from "./SingleItemCharacteristicsShowCase";
 
 type SingleItemPageShowCaseTypes = {
@@ -19,22 +19,19 @@ type SingleItemPageShowCaseTypes = {
   currentPage: string;
   preview: string | ArrayBuffer | null;
   price: number;
-  brandName: string;
+  brand: string;
   title: string;
-  category: string;
   description: string;
   imgsPreview: string[] | ArrayBuffer | null;
   allMainTitles: string[];
-  allSubTitles: string[];
-  allTexts: string[];
-  amountOfMainInfoAll: number[];
+  allSubTitles: string[][];
+  allTexts: string[][];
 };
 
 export default function SingleItemPageShowCase({
   currentPage,
   setCurrentPage,
   preview,
-  category,
   price,
   title,
   imgsPreview,
@@ -42,7 +39,7 @@ export default function SingleItemPageShowCase({
   allMainTitles,
   allSubTitles,
   allTexts,
-  amountOfMainInfoAll,
+  brand,
 }: SingleItemPageShowCaseTypes) {
   const { productId } = useParams();
   const [currentImage, setCurrentImage] = useState(1);
@@ -121,11 +118,15 @@ export default function SingleItemPageShowCase({
               ))}
             </div>
           ) : (
-            <div className="flex gap-6 max-w-[35rem] relative  h-full transition-all ">
-              <RenderImages
-                image={preview as string}
-                currentImg={currentImage}
-              />
+            <div className="flex gap-6 max-w-[35rem] relative h-full transition-all ">
+              {allImgs.map((img, i) => (
+                <RenderImagesShowCase
+                  image={img}
+                  key={img}
+                  currentIndex={i + 1}
+                  currentImg={currentImage}
+                />
+              ))}
               <button
                 className="absolute top-[calc(50%-1.2rem)] left-[1rem] flex items-center justify-center w-[4rem] h-[4rem] bg-white rounded-full"
                 onClick={() =>
@@ -133,7 +134,6 @@ export default function SingleItemPageShowCase({
                     if (prev > 1) {
                       return prev - 1;
                     } else {
-                      // product.images.length
                       return 4;
                     }
                   })
@@ -145,7 +145,6 @@ export default function SingleItemPageShowCase({
                 className="absolute top-[calc(50%-1.2rem)] flex items-center justify-center right-[1rem] w-[4rem] h-[4rem] bg-primary-orange text-white rounded-full"
                 onClick={() =>
                   setCurrentImage((prev) => {
-                    // product.images.length
                     if (prev >= 4) {
                       return 1;
                     } else {
@@ -158,7 +157,6 @@ export default function SingleItemPageShowCase({
               </button>
             </div>
           )}
-          {/* characteristics */}
           <div
             className={` ${
               showDescription ? "flex-col " : "flex-col-reverse"
@@ -169,23 +167,17 @@ export default function SingleItemPageShowCase({
               allMainTitles={allMainTitles}
               allSubTitles={allSubTitles}
               allTexts={allTexts}
-              amountOfMainInfoAll={amountOfMainInfoAll}
             />
             <SingleItemDescription
-              category={category}
+              brand={brand}
               description={description}
               price={price}
               showDescription={showDescription}
               title={title}
             />
-            <SingleItemAddToCart
-              category={category}
-              description={description}
-              image={preview as string}
+            <SingleItemAddToCartShowCase
               price={price}
               productId={productId as string}
-              rating={2}
-              title={title}
             />
           </div>
         </div>

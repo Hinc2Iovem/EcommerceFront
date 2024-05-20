@@ -3,8 +3,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosPublic } from "../../api/axios";
 import Header from "../../components/Header/Header";
+import { isNonEmptyMatrix } from "../../utilities/IsNonEmptyMatrix";
 import ButtonHoverPromptModal from "../shared/ButtonAsideHoverPromtModal/ButtonHoverPromptModal";
 import InputLabelGoesDown from "../shared/InputLabelGoesDown";
+import ClipLoad from "../shared/Miscellaneous/Loaders/ClipLoad";
+import SyncLoad from "../shared/Miscellaneous/Loaders/SyncLoad";
 import PreviewImage from "../shared/PreviewImage";
 import AddProductCategories from "./AddProductCategories";
 import AddProductCharacteristics from "./AddProductCharacteristics";
@@ -13,10 +16,18 @@ import {
   ProductSubCharacteristicsResponse,
 } from "./CharacteristicTypes";
 import ModalImages from "./ModalImages";
-import { ProductTypes } from "./ProductTypes";
+import { ProductTypes } from "../../types/ProductTypes";
 import SingleItemPageShowCase from "./ShowCase/SingleItemPageShowCase";
 
 export default function AddProducts() {
+  const [submitionStarted, setSubmitionStarted] = useState(false);
+  const [loading, setLoading] = useState({
+    frontImg: true,
+    imgs: true,
+    form: true,
+    characteristics: true,
+  });
+
   const [currentCategory, setCurrentCategory] = useState("");
   const [subCurrentCategory, setSubCurrentCategory] = useState("");
   const [title, setTitle] = useState("");
@@ -29,35 +40,51 @@ export default function AddProducts() {
   const [imgsPreview, setImgsPreview] = useState<string[] | ArrayBuffer | null>(
     []
   );
-  const [imgUrls, setImgUrls] = useState<string[]>([]);
 
-  const canSave = [preview, description, price, brandName, title].every(
-    Boolean
-  );
   const [allMainTitles, setAllMainTitles] = useState<string[]>([]);
-  const [allSubTitles, setAllSubTitles] = useState<string[]>([]);
-  const [allTexts, setAllTexts] = useState<string[]>([]);
+  const [allSubTitles, setAllSubTitles] = useState<string[][]>([]);
+  const [allTexts, setAllTexts] = useState<string[][]>([]);
   const [amountOfMainTitles, setAmountOfMainTitles] = useState(1);
   const [amountOfMainInfoAll, setAmountOfMainInfoAll] = useState<number[]>([1]);
+
+  const canSave = () => {
+    return (
+      [preview, description, price, brandName, title].every(Boolean) &&
+      isNonEmptyMatrix(allTexts) &&
+      isNonEmptyMatrix(allSubTitles) &&
+      Array.isArray(allMainTitles) &&
+      allMainTitles.length > 0 &&
+      allMainTitles.every(Boolean) &&
+      Array.isArray(imgsPreview) &&
+      imgsPreview.length === 3
+    );
+  };
+
+  console.log(canSave());
 
   const navigate = useNavigate();
   async function handleOnSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
     try {
-      if (typeof preview === "undefined") return;
-      if (!canSave || !imgsPreview) {
-        console.log(canSave);
+      if (typeof preview === "undefined") {
+        setSubmitionStarted(false);
+
+        return;
+      }
+      if (!canSave()) {
+        setSubmitionStarted(false);
+        console.log(canSave());
         console.log("All fields are required");
         return;
       }
 
-      if (!allTexts.every(Boolean) || !allSubTitles.every(Boolean)) {
-        console.log(allTexts);
-        console.log(allSubTitles);
-        console.log("All fields are required, characteristics");
+      if (Array.isArray(imgsPreview) && imgsPreview.length !== 3) {
+        console.log("All images are required");
+        setSubmitionStarted(false);
         return;
       }
 
+      setSubmitionStarted(true);
       const formData = new FormData();
 
       formData.append("file", preview as string);
@@ -71,27 +98,29 @@ export default function AddProducts() {
           body: formData,
         }
       ).then((r) => r.json());
-
-      console.log("results", frontImg);
-
-      if (imgsPreview && Array.isArray(imgsPreview)) {
-        for (const img of imgsPreview) {
-          const formDataImgs = new FormData();
-          formDataImgs.append(`file_${img}`, img);
-          formData.append("upload_preset", "ecommerce");
-          formData.append("api_key", import.meta.env.VITE_CLOUDINARY_API_KEY);
-          const imgResult = await fetch(
-            "https://api.cloudinary.com/v1_1/dbfyil6fb/image/upload",
-            {
-              method: "POST",
-              body: formData,
-            }
-          ).then((r) => r.json());
-          setImgUrls((prev) => [...prev, imgResult.secure_url]);
-          console.log("imgResult", imgResult);
-        }
+      setLoading((prev) => ({
+        ...prev,
+        frontImg: false,
+      }));
+      const uploadedImgUrls = [];
+      for (const img of imgsPreview as string[]) {
+        const formDataImgs = new FormData();
+        formDataImgs.append("file", img);
+        formDataImgs.append("upload_preset", "ecommerce");
+        formDataImgs.append("api_key", import.meta.env.VITE_CLOUDINARY_API_KEY);
+        const imgResult = await fetch(
+          "https://api.cloudinary.com/v1_1/dbfyil6fb/image/upload",
+          {
+            method: "POST",
+            body: formDataImgs,
+          }
+        ).then((r) => r.json());
+        uploadedImgUrls.push(imgResult.secure_url);
       }
-
+      setLoading((prev) => ({
+        ...prev,
+        imgs: false,
+      }));
       const userId = localStorage.getItem("userId");
       const priceToNum = Number(price);
       const res = await axiosPublic.post<ProductTypes>(
@@ -101,13 +130,16 @@ export default function AddProducts() {
           description,
           price: priceToNum,
           brand: brandName,
-          imgUrls,
+          imgUrls: uploadedImgUrls,
           category: currentCategory,
           frontImg: frontImg.secure_url,
+          subCategory: subCurrentCategory,
         }
       );
-      console.log(res);
-
+      setLoading((prev) => ({
+        ...prev,
+        form: false,
+      }));
       for (let i = 0; i < amountOfMainTitles; i++) {
         const characteristicsMainTitles =
           await axiosPublic.post<ProductCharacteristicsResponse>(
@@ -116,29 +148,29 @@ export default function AddProducts() {
               title: allMainTitles[i],
             }
           );
-        console.log(
-          "characteristicsMainTitles.data: ",
-          characteristicsMainTitles.data
-        );
 
         for (let j = 0; j < amountOfMainInfoAll[i]; j++) {
           const subCharacteristics =
             await axiosPublic.post<ProductSubCharacteristicsResponse>(
               `/productSubCharacteristics/productCharacteristics/${characteristicsMainTitles.data._id}`,
               {
-                subTitle: allSubTitles[j],
-                text: allTexts[j],
+                subTitle: allSubTitles[i][j],
+                text: allTexts[i][j],
               }
             );
           console.log("subCharacteristics.data: ", subCharacteristics.data);
         }
       }
+      setLoading((prev) => ({
+        ...prev,
+        characteristics: false,
+      }));
       navigate(`/profile/${userId}`);
     } catch (error) {
+      setSubmitionStarted(false);
       console.error(error);
     }
   }
-  console.log("Add Product", allMainTitles);
 
   return (
     <>
@@ -154,19 +186,24 @@ export default function AddProducts() {
       >
         <div className="flex w-full items-center gap-[1rem]">
           <button
+            disabled={!canSave()}
             onClick={() => setCurrentPage("result")}
-            className="transition-all ml-auto self-end shadow-sm rounded-md p-[1rem] active:scale-[.97] bg-white hover:text-white hover:bg-primary-orange text-gray-700 font-medium"
+            className={` ${
+              !canSave() ? "cursor-not-allowed opacity-50" : ""
+            } transition-all ml-auto self-end shadow-sm rounded-md p-[1rem] active:scale-[.97] bg-white hover:text-white hover:bg-primary-orange text-gray-700 font-medium`}
           >
             See Results
           </button>
           <ButtonHoverPromptModal
+            disabled={!canSave()}
             type="submit"
             form="addProduct"
             contentName="Submit Form"
-            // marginAutoSide="ml-auto"
             positionByAbscissa="right"
             position="relative"
-            className="p-[1rem] active:scale-[.97] bg-white hover:text-white hover:bg-primary-orange"
+            className={`${
+              !canSave() ? "cursor-not-allowed opacity-50" : ""
+            } p-[1rem] active:scale-[.97] bg-white hover:text-white hover:bg-primary-orange`}
             variant="rectangleWithShadow"
           >
             <Save />
@@ -177,9 +214,14 @@ export default function AddProducts() {
           setPreview={setPreview}
           imagePreview={preview}
         >
-          <p className="absolute top-[-4rem] text-[3rem] font-medium text-gray-700">
+          <p className="absolute top-[-4rem] text-[2rem] sm:text-[3rem] font-medium text-gray-700">
             Front Image
           </p>
+          <SyncLoad
+            className="bottom-[1rem] right-[1rem]"
+            conditionToLoading={loading.frontImg}
+            conditionToStart={submitionStarted}
+          />
         </PreviewImage>
 
         <form
@@ -241,6 +283,20 @@ export default function AddProducts() {
             >
               <ImagePlus />
             </ButtonHoverPromptModal>
+            <ClipLoad
+              className={`${
+                loading.form
+                  ? "top-[.3rem] right-[.1rem]"
+                  : "top-[0rem] right-[.1rem]"
+              }`}
+              conditionToLoading={loading.form}
+              conditionToStart={submitionStarted}
+            />
+            <SyncLoad
+              className="bottom-[1rem] left-[1rem]"
+              conditionToLoading={loading.imgs}
+              conditionToStart={submitionStarted}
+            />
           </div>
           <AddProductCharacteristics
             setAllMainTitles={setAllMainTitles}
@@ -248,6 +304,8 @@ export default function AddProducts() {
             setAllTexts={setAllTexts}
             setAmountOfMainTitles={setAmountOfMainTitles}
             setAmountOfMainInfoAll={setAmountOfMainInfoAll}
+            loading={loading}
+            submitionStarted={submitionStarted}
           />
         </form>
         <ModalImages
@@ -262,15 +320,13 @@ export default function AddProducts() {
         setCurrentPage={setCurrentPage}
         preview={preview}
         title={title}
-        brandName={brandName}
+        brand={brandName}
         price={Number(price)}
-        category={currentCategory}
         imgsPreview={imgsPreview}
         description={description}
         allMainTitles={allMainTitles}
         allSubTitles={allSubTitles}
         allTexts={allTexts}
-        amountOfMainInfoAll={amountOfMainInfoAll}
       />
     </>
   );

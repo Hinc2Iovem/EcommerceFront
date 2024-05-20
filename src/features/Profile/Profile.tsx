@@ -34,7 +34,7 @@ export default function Profile() {
           currentCategory={currentCategory}
           setCurrentCategory={setCurrentCategory}
         />
-        <div className="flex flex-col p-[2rem] max-w-[144rem] w-full">
+        <div className="flex flex-col p-[2rem] pt-[1rem] max-w-[144rem] w-full">
           <div className="flex items-center justify-between">
             <div
               className={`${
@@ -58,16 +58,16 @@ export default function Profile() {
             <div
               className={`${
                 roles?.includes("Seller") ? "visible" : "hidden"
-              } mb-[3rem] flex gap-[.5rem] ml-auto`}
+              } mb-[1rem] flex gap-[.5rem] ml-auto`}
             >
               <Link to="/add/products">
                 <ButtonHoverPromptModal
-                  className="bg-white m-0 shadow-md hover:bg-primary-orange font-medium text-[1.5rem]"
+                  className="bg-white m-0 shadow-md hover:bg-primary-orange font-medium w-[4rem] h-[4rem] p-[.5rem]"
                   variant="rectangleWithShadow"
                   contentName="Add Product"
                   positionByAbscissa="right"
                 >
-                  <ListPlus />
+                  <ListPlus className="w-full h-full" />
                 </ButtonHoverPromptModal>
               </Link>
               {/* <ButtonHoverPromptModal

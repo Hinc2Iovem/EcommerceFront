@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getUser } from "../../features/Profile/profileQueries";
-import { UserTypes } from "../../features/Profile/ProfileTypes";
+import { UserTypes } from "../../types/ProfileTypes";
 
 export default function useGetUser() {
   const [user, setUser] = useState<UserTypes | object>({});

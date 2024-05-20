@@ -12,10 +12,8 @@ const ButtonHoverPromptModalStyles = cva(
         iconWithShadow: [
           "hover:shadow-black bg-white hover:shadow-sm rounded-full",
         ],
-        rectangle: ["py-[.5rem] px-[2rem] rounded-md"],
-        rectangleWithShadow: [
-          "hover:shadow-black py-[.5rem] px-[2rem] rounded-md shadow-sm",
-        ],
+        rectangle: ["rounded-md"],
+        rectangleWithShadow: ["hover:shadow-gray-300 rounded-md shadow-sm"],
       },
     },
     defaultVariants: {

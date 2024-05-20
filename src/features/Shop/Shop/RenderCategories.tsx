@@ -1,4 +1,4 @@
-import { CATEGORIES } from "../../const/PillsCategories";
+import { CATEGORIES } from "../../../const/PillsCategories";
 import EachCategory from "./EachCategory";
 
 type RenderCategoriesTypes = {

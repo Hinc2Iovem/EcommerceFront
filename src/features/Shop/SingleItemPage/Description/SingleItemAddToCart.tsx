@@ -1,8 +1,8 @@
-import { Minus, Plus } from "lucide-react";
-import FormatCurrency from "../../../utilities/FormatCurrency";
+import { Minus, Plus, ShoppingCart } from "lucide-react";
+import FormatCurrency from "../../../../utilities/FormatCurrency";
 import { useState } from "react";
-import useCart from "../../../hooks/useCart";
-import { CartItem } from "../../Cart/CartContext";
+import useCart from "../../../../hooks/useCart";
+import { CartItem } from "../../../Cart/CartContext";
 
 type SingleItemAddToCartTypes = {
   price: number;
@@ -74,7 +74,7 @@ export default function SingleItemAddToCart({
         {FormatCurrency(price)}
       </h3>
       <div className="flex items-center md:flex-row flex-col gap-3 md:gap-7 w-full">
-        <div className="flex bg-neutral-magnolia w-full md:w-[40%] justify-between items-center rounded-xl ">
+        <div className="flex bg-neutral-magnolia justify-between items-center rounded-xl w-full md:w-[20rem] ">
           <button
             className="text-[2rem] p-[1rem] text-primary-orange outline-none border-none"
             onClick={handleMinus}
@@ -91,9 +91,10 @@ export default function SingleItemAddToCart({
         </div>
         <button
           onClick={handleAddToCart}
-          className="bg-primary-orange text-white shadow-primary-orange shadow-lg py-[1rem] w-full md:w-[60%] rounded-xl hover:opacity-90"
+          className="bg-primary-orange flex justify-center w-full text-white shadow-primary-orange shadow-md self-center py-[1rem] px-[1rem] rounded-xl hover:opacity-90 active:scale-[.97] transition-all"
         >
           Add To Cart
+          <ShoppingCart />
         </button>
       </div>
     </div>

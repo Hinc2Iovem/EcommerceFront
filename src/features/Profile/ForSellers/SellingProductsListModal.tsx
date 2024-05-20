@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import useGetProductByUserId from "../../../hooks/Profile/useGetProductByUserId";
+import useGetProductsByUserId from "../../../hooks/Profile/useGetProductsByUserId";
 import ButtonHoverPromptModal from "../../shared/ButtonAsideHoverPromtModal/ButtonHoverPromptModal";
 import FormatCurrency from "../../../utilities/FormatCurrency";
 
@@ -14,7 +14,7 @@ export default function SellingProductsListModal({
   showProdactsListModal,
   userId,
 }: SellingProductsListModalTypes) {
-  const products = useGetProductByUserId({ userId });
+  const products = useGetProductsByUserId({ userId });
 
   return (
     <aside
