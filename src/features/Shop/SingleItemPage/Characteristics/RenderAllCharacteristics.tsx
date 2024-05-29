@@ -17,7 +17,7 @@ export default function RenderAllCharacteristics({
   const mainInfo = useGetAllMainInfoCharacteristic({
     productCharacteristicId: mainTitleId,
   });
-  console.log(mainInfo);
+  console.log("mainInfo: ", mainInfo);
 
   return (
     <div className="flex flex-col">

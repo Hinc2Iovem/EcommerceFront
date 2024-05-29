@@ -1,25 +1,20 @@
 import { useEffect, useState } from "react";
-import { axiosPublic } from "../../api/axios";
+import { getProductById } from "../../api/queries/productQueries";
 import { ProductTypes } from "../../types/ProductTypes";
 
 export default function useGetProductById(
   productId: string | undefined
 ): ProductTypes | undefined {
   const [product, setProduct] = useState<ProductTypes>();
-  console.log("productId: ", productId);
 
   useEffect(() => {
     if (productId !== null) {
-      const handler = async () => {
-        const res = await axiosPublic
-          .get(`products/${productId}`)
-          .then((res) => res.data);
-        setProduct(res);
-        console.log(res);
-      };
-      handler();
+      getProductById({ productId: productId as string }).then((r) => {
+        if (r) {
+          setProduct(r);
+        }
+      });
     }
   }, [productId]);
-
   return product ? product : undefined;
 }

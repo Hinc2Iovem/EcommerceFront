@@ -18,7 +18,7 @@ export default function RenderCategories({
 }: RenderCategoriesTypes) {
   return (
     <div
-      className={`md:flex max-w-[31rem] hidden md:row-span-12 bg-white h-fit flex-col gap-[1rem] p-[1.5rem] rounded-lg shadow-sm sticky top-[90px]`}
+      className={`md:flex max-w-[31rem] hidden md:row-span-12 bg-white h-fit flex-col gap-[1rem] p-[1.5rem] rounded-lg shadow-sm sticky top-[90px] shrink-0 min-w-[30rem]`}
     >
       {Object.entries(CATEGORIES).map(
         ([key, value]: [string, string | Record<string, string>]) => {

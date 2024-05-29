@@ -21,8 +21,6 @@ export default function Shop() {
     });
   }, [isClicked]);
 
-  console.log(products);
-
   // useAllKrogerProducts({
   //   limit,
   //   setLoading,
@@ -43,7 +41,7 @@ export default function Shop() {
         setIsClicked={setIsClicked}
         setCurrentCategory={setCurrentCategory}
       />
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] grid-rows-[repeat(auto-fit,50rem)] p-3 gap-3 bg-neutral-magnolia ">
+      <div className="md:flex">
         <RenderCategories
           currentCategory={currentCategory}
           setCurrentCategory={setCurrentCategory}
@@ -51,7 +49,9 @@ export default function Shop() {
           setSubCurrentCategory={setSubCategory}
           subCurrentCategory={subCategory}
         />
-        {products && products.map((p) => <SingleItem key={p._id} {...p} />)}
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(25rem,40rem))] p-3 gap-3 bg-neutral-magnolia w-full justify-center">
+          {products && products.map((p) => <SingleItem key={p._id} {...p} />)}
+        </div>
       </div>
       <div ref={scrollTriggerRef} className="h-[10rem] w-full"></div>
     </section>

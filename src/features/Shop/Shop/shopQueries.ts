@@ -91,8 +91,6 @@ export const addToCart = async ({
   productId,
 }: AddDecreaseFromCartTypes) => {
   try {
-    console.log(productId);
-
     await axiosPublic.put(`/carts/users/${userId}/products/${productId}`, {
       quantity: quantity,
     });

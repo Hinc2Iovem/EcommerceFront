@@ -63,9 +63,14 @@ export default function AddProducts() {
   console.log(canSave());
 
   const navigate = useNavigate();
+
   async function handleOnSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
     try {
+      if (submitionStarted) {
+        console.log("Submition has been already started");
+        return;
+      }
       if (typeof preview === "undefined") {
         setSubmitionStarted(false);
 

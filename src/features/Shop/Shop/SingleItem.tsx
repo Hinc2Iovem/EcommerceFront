@@ -24,9 +24,9 @@ export default function SingleItem({
     addToCart({ userId, productId: _id, quantity: 1 });
   };
   return (
-    <div className="flex flex-col gap-3 h-[50rem] bg-white p-3 rounded-xl justify-between relative">
+    <div className="flex flex-col gap-3 bg-white p-3 rounded-xl justify-between relative h-[58rem]">
       <DisplayRating rating={rating} />
-      <div className="h-[30rem]">
+      <div className="h-[28rem] mt-[2rem]">
         <img
           src={frontImg}
           alt={title}
@@ -41,13 +41,14 @@ export default function SingleItem({
           {title.length > 20 ? title.substring(0, 20) + "..." : title}
         </h3>
         <p className="text-gray-700 break-all text-[1.5rem]">
-          {description.length > 50
-            ? description.substring(0, 50) + "..."
+          {description.length > 200
+            ? description.substring(0, 200) + "..."
             : description}
         </p>
       </Link>
       <h3 className="text-gray-700">Price - {FormatCurrency(+price)}</h3>
-      <div className="w-full flex justify-center items-center gap-[2.5rem] mb-[.5rem]">
+
+      <div className="w-full flex justify-center items-center gap-[2.5rem]">
         <ButtonHoverPromptModal
           contentName="Favourite"
           positionByAbscissa="left"

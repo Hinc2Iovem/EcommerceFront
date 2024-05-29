@@ -4,7 +4,6 @@ import { UserTypes } from "../../types/ProfileTypes";
 
 export const getUser = async ({ userId }: { userId: string }) => {
   try {
-    userId = JSON.parse(userId);
     const res = await axiosPublic.get<UserTypes>(`/users/${userId}`);
     return res.data;
   } catch (error) {
@@ -56,6 +55,23 @@ export const getSoldProductsByUserId = async ({
     const res = await axiosPublic.get<ProductTypes[]>(
       `/soldProducts/users/${userId}`
     );
+    return res.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const addMoney = async ({
+  userId,
+  money,
+}: {
+  userId: string;
+  money: number;
+}) => {
+  try {
+    const res = await axiosPublic.patch<UserTypes>(`/users/${userId}/money`, {
+      amountOfMoney: money,
+    });
     return res.data;
   } catch (error) {
     console.error(error);

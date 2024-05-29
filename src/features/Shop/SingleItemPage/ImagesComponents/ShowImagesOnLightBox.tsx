@@ -19,11 +19,11 @@ export default function ShowImagesOnLightBox({
     <aside
       className={`${
         isLightBox
-          ? "fixed z-[4] top-[calc(50%-309px)] left-[calc(50%-175px)]"
+          ? "fixed z-[4] top-[calc(50%-309px)] left-[calc(50%-25rem)]"
           : "hidden"
       } `}
     >
-      <div className="flex-col gap-6 max-w-[35rem] hidden md:flex relative h-full">
+      <div className="flex-col gap-6 max-w-[50rem] hidden md:flex relative h-full">
         <img src={imgs[currentImageLarge]} className="h-[52.5rem]" />
         <div className="md:flex gap-6 hidden w-full ">
           {imgs.map((img, index) => (

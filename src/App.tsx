@@ -14,6 +14,8 @@ import Missing from "./pages/Missing";
 import Unauthorized from "./pages/Unauthorized";
 import AddProducts from "./features/AddProducts/AddProducts";
 import Permission from "./features/GivePermissions/Permission";
+import RecommendedProducts from "./features/RecommendedProducts/RecommendedProducts";
+import DefaultProducts from "./features/DefaultProducts/DefaultProducts";
 
 export default function App() {
   return (
@@ -50,6 +52,14 @@ export default function App() {
 
             <Route element={<LayoutDefault />} path="permissions">
               <Route element={<Permission />} index />
+            </Route>
+
+            <Route element={<LayoutDefault />} path="recommendedProducts">
+              <Route element={<RecommendedProducts />} index />
+            </Route>
+
+            <Route element={<LayoutDefault />} path="defaultProducts">
+              <Route element={<DefaultProducts />} index />
             </Route>
             <Route element={<Missing />} path="*" />
           </Route>

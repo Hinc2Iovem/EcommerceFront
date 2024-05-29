@@ -2,23 +2,15 @@ import { useEffect, useState } from "react";
 import { getUser } from "../../features/Profile/profileQueries";
 import { UserTypes } from "../../types/ProfileTypes";
 
-export default function useGetUser() {
+export default function useGetUser({ userId }: { userId: string }) {
   const [user, setUser] = useState<UserTypes | object>({});
   useEffect(() => {
-    let preventRerenders = true;
-    if (preventRerenders) {
-      getUser({ userId: JSON.stringify(localStorage.getItem("userId")) }).then(
-        (r) => {
-          if (r !== undefined) {
-            setUser(r);
-          }
-        }
-      );
-    }
-    return () => {
-      preventRerenders = false;
-    };
-  }, []);
+    getUser({ userId }).then((r) => {
+      if (r) {
+        setUser(r);
+      }
+    });
+  }, [userId]);
 
   return user as UserTypes;
 }

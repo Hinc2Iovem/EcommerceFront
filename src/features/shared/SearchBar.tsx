@@ -9,7 +9,6 @@ export default function SearchBar({ setValue }: SearchBarTypes) {
     <form
       onSubmit={(e) => e.preventDefault()}
       className="flex justify-center h-[5rem] items-center w-full border-[1px] relative bg-white rounded-lg"
-      noValidate
     >
       <input
         onChange={(e) => setValue(e.target.value)}

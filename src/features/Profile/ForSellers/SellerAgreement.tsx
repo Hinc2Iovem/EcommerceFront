@@ -18,7 +18,6 @@ export default function SellerAgreement({
 
   const handleAgreement = async () => {
     if (isConfirmed) {
-      console.log(userId);
       becomeSeller({ userId });
       setIsLightBox(false);
       navigate("/profile/1");

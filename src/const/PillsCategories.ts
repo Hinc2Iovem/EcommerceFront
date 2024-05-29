@@ -18,6 +18,7 @@ export const CATEGORIES = {
   Electronics: {
     Laptops: "Laptops",
     Smartphones: "Smartphones",
+    Computers: "Computers",
   },
 };
 
@@ -35,5 +36,6 @@ export const CATEGORIES_FOR_CREATING_PRODUCTS = {
   Electronics: {
     Laptops: "Laptops",
     Smartphones: "Smartphones",
+    Computers: "Computers",
   },
 };

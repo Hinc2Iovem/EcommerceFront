@@ -109,7 +109,7 @@ function ProfileProductItem({ product }: ProfileProductItemTypes) {
       <img
         src={product.frontImg}
         alt={product.title}
-        className="w-full object-contain"
+        className="w-full object-contain h-[25rem]"
       />
       <div className="flex flex-col gap-[.3rem] w-full">
         <Link
@@ -120,11 +120,11 @@ function ProfileProductItem({ product }: ProfileProductItemTypes) {
         </Link>
 
         <p className=" text-gray-700 break-words">
-          {product.description.length > 300
-            ? product.description.substring(0, 300) + "..."
+          {product.description.length > 200
+            ? product.description.substring(0, 200) + "..."
             : product.description}
         </p>
-        <h5 className="font-medium text-[1.4rem]">
+        <h5 className="font-medium text-[1.5rem]">
           Price: {FormatCurrency(Number(product.price))}
         </h5>
       </div>

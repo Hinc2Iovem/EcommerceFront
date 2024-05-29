@@ -20,7 +20,7 @@ export default function Header({
 
   return (
     <>
-      <header className={`sticky  bg-white w-full top-0 z-[2]`}>
+      <header className={`sticky bg-white w-full top-0 z-[2]`}>
         <HeaderSearch setExpandBurgerMenu={setExpandBurgerMenu} />
 
         <div

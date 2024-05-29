@@ -16,8 +16,6 @@ export default function ModalImages({
   imgsPreview,
   setImgsPreview,
 }: ModalImagesTypes) {
-  console.log(showImgsModal);
-
   const renderImgPreviews = () => {
     const previews = [];
     if (Array.isArray(imgsPreview)) {

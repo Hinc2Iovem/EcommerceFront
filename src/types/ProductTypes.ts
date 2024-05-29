@@ -12,6 +12,7 @@ export type ProductTypes = {
   isActive: boolean;
   frontImg: string;
   amountOfReports: number;
+  amountOfRatings: number;
   subCategory: string;
 };
 

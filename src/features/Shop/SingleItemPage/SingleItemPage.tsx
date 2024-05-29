@@ -1,9 +1,10 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { MATCHMEDIA } from "../../../const/MatchMedia";
 import { addToFavourite, deleteFromFavourite } from "../Shop/shopQueries";
 import characteristics from "../../../assets/images/SingleItemPage/characteristics.png";
+import owner from "../../../assets/images/SingleItemPage/owner.png";
 import heart from "../../../assets/images/Shop/heart.png";
 import hollowHeart from "../../../assets/images/Shop/hollowHeart.png";
 import Header from "../../../components/Header/Header";
@@ -18,6 +19,11 @@ import SingleItemDescription from "./Description/SingleItemDescription";
 import useGetProductById from "../../../hooks/Products/useGetProductById";
 import SingleItemCharacteristics from "./Characteristics/SingleItemCharacteristics";
 import useGetFavouriteByProductIdUserId from "../../../hooks/Favourite/useGetFavouriteByProductIdUserId";
+import Rating from "./Rating/Rating";
+import Comment from "./Comment/Comment";
+import useGetUser from "../../../hooks/Profile/useGetUser";
+import SellerProducts from "./SellerProducts/SellerProducts";
+import OverAllRating from "./Rating/OverAllRating";
 
 export default function SingleItemPage() {
   const params = useParams<{ productId?: string }>();
@@ -26,14 +32,30 @@ export default function SingleItemPage() {
   const [isLightBox, setIsLightBox] = useState(false);
   const mobile = useMatchMedia(MATCHMEDIA.Mobile);
   const userId: string = localStorage.getItem("userId") as string;
+  const seller = useGetUser({ userId: product?.userId as string });
   const favourite = useGetFavouriteByProductIdUserId({
     userId,
     productId: product?._id,
   });
-  const [showCharacteristics, setShowCharacteristics] = useState(true);
+  const [showAdditionalInformation, setShowAdditionalInformation] =
+    useState("");
   const [isFavouriteOrNot, setIsFavouriteOrNot] = useState(
     favourite ? true : false
   );
+  console.log("favourite: ", favourite);
+  console.log(isFavouriteOrNot);
+
+  useEffect(() => {
+    if (favourite) {
+      setIsFavouriteOrNot(true);
+    }
+  }, [favourite]);
+  useEffect(() => {
+    if (mobile) {
+      setIsLightBox(false);
+    }
+  }, [mobile]);
+
   if (!product) {
     return <h2>Loading...</h2>;
   }
@@ -47,30 +69,41 @@ export default function SingleItemPage() {
       addToFavourite({ userId, productId: product?._id });
     }
   };
-  console.log(isFavouriteOrNot);
-
-  console.log(product);
 
   const allImgs = [product.frontImg, ...product.imgUrls];
   return (
     <>
       <Header showPillsOrNot={false} />
-      <div className={"bg-neutral-magnolia p-[1rem] flex flex-col"}>
-        <ul className="flex mt-[2rem] mb-[1rem] items-center gap-[1rem] w-full mx-auto max-w-[1110px]">
-          <li className="px-[1rem] py-[.5rem] rounded-md text-black bg-white text-[1.8rem] font-medium w-fit">
-            {product.category}
-          </li>
-          <li className="px-[1rem] py-[.5rem] rounded-md text-black bg-white text-[1.8rem] font-medium w-fit">
-            {product.subCategory}
-          </li>
-        </ul>
+      <div className={"bg-neutral-magnolia p-[1rem] flex flex-col gap-[1rem]"}>
+        <div className="flex w-full mx-auto max-w-[1110px] items-baseline justify-between relative">
+          <ul className="flex mt-[2rem] mb-[0rem] items-center gap-[1rem] ">
+            <li className="px-[1rem] py-[.5rem] rounded-md text-black bg-white text-[1.8rem] font-medium w-fit">
+              {product.category}
+            </li>
+            <li className="px-[1rem] py-[.5rem] rounded-md text-black bg-white text-[1.8rem] font-medium w-fit">
+              {product.subCategory}
+            </li>
+          </ul>
+          <Rating
+            rating={product.rating}
+            productId={product._id}
+            userId={userId}
+            mobile={mobile}
+          />
+        </div>
         <div className="bg-white flex flex-col gap-[2rem] rounded-lg max-w-[1110px] mx-auto p-[3rem] relative w-full">
-          <div className="absolute top-[.3rem] right-[.3rem] sm:top-[1rem] sm:right-[1rem] flex gap-[1rem] z-[1]">
+          <div
+            className={`absolute ${
+              mobile
+                ? "top-[.3rem] left-[.3rem] sm:top-[1rem] sm:left-[1rem]"
+                : "top-[.3rem] right-[.3rem] sm:top-[1rem] sm:right-[1rem]"
+            }  flex gap-[1rem] z-[1]`}
+          >
             <ButtonHoverPromptModal
               contentName={`${
                 isFavouriteOrNot ? "Remove From Favourite" : "Add To Favourite"
               }`}
-              positionByAbscissa="right"
+              positionByAbscissa={mobile ? "left" : "right"}
               asideClasses="bottom-[-3rem]"
               className={`w-[3rem] h-[3rem] bg-transparent shadow-md transition-all active:scale-[0.98] hover:scale-[1.02]`}
               variant={"icon"}
@@ -84,19 +117,8 @@ export default function SingleItemPage() {
                 className="w-full"
               />
             </ButtonHoverPromptModal>
-            {/* <ButtonHoverPromptModal
-              contentName="Description"
-              positionByAbscissa="right"
-              asideClasses="bottom-[-3rem]"
-              className={`w-[4.6rem] h-[4.6rem] bg-transparent shadow-md ${
-                showDescription ? "" : ""
-              } transition-all`}
-              variant={"icon"}
-              onClick={() => setShowDescription(true)}
-            >
-              <img src={description} alt="description" className="w-full" />
-            </ButtonHoverPromptModal> */}
           </div>
+
           <div
             className={`items-center h-fit flex md:flex-row flex-col md:gap-[8rem] gap-3 relative`}
           >
@@ -175,34 +197,119 @@ export default function SingleItemPage() {
                 />
               </div>
               {mobile && (
-                <SingleItemCharacteristics
-                  showCharacteristics={showCharacteristics}
-                  productId={params.productId ? params.productId : ""}
-                />
+                <>
+                  <div className="mt-[1.5rem] flex items-center gap-[2rem] justify-between">
+                    <div className="flex items-center gap-[2rem]">
+                      <ButtonHoverPromptModal
+                        contentName="Characteristics"
+                        positionByAbscissa="left"
+                        asideClasses="bottom-[-3.5rem]"
+                        className={`w-[5rem] h-[5rem] pl-[.5rem] bg-transparent shadow-md transition-all text-center`}
+                        variant={"rectangleWithShadow"}
+                        onClick={() => {
+                          if (showAdditionalInformation === "characteristics") {
+                            setShowAdditionalInformation("");
+                          } else {
+                            setShowAdditionalInformation("characteristics");
+                          }
+                        }}
+                      >
+                        <img
+                          src={characteristics}
+                          alt="characteristics"
+                          className="w-full "
+                        />
+                      </ButtonHoverPromptModal>
+                      <ButtonHoverPromptModal
+                        contentName={`More products from ${seller.username}`}
+                        positionByAbscissa="left"
+                        asideClasses="bottom-[-3.5rem]"
+                        className={`w-[5rem] h-[5rem] pl-[.5rem] bg-transparent shadow-md transition-all text-center`}
+                        variant={"rectangleWithShadow"}
+                        onClick={() => {
+                          if (showAdditionalInformation === "sellerProducts") {
+                            setShowAdditionalInformation("");
+                          } else {
+                            setShowAdditionalInformation("sellerProducts");
+                          }
+                        }}
+                      >
+                        <img
+                          src={owner}
+                          alt="More products"
+                          className="w-full "
+                        />
+                      </ButtonHoverPromptModal>
+                    </div>
+                    <OverAllRating rating={product.rating} />
+                  </div>
+                  <SingleItemCharacteristics
+                    showAdditionalInformation={showAdditionalInformation}
+                    productId={params.productId ? params.productId : ""}
+                  />
+                </>
               )}
             </div>
           </div>
-          <ButtonHoverPromptModal
-            contentName="Characteristics"
-            positionByAbscissa="left"
-            asideClasses="bottom-[-3.5rem]"
-            className={`w-[5rem] h-[5rem] pl-[.5rem] bg-transparent shadow-md transition-all text-center`}
-            variant={"rectangleWithShadow"}
-            onClick={() => setShowCharacteristics((prev) => !prev)}
-          >
-            <img
-              src={characteristics}
-              alt="characteristics"
-              className="w-full "
-            />
-          </ButtonHoverPromptModal>
+
           {!mobile && (
-            <SingleItemCharacteristics
-              showCharacteristics={showCharacteristics}
-              productId={params.productId ? params.productId : ""}
-            />
+            <>
+              <div className="flex items-center justify-between gap-[2rem]">
+                <div className="flex items-center gap-[2rem]">
+                  <ButtonHoverPromptModal
+                    contentName="Characteristics"
+                    positionByAbscissa="left"
+                    asideClasses="bottom-[-3.5rem]"
+                    className={`w-[5rem] h-[5rem] pl-[.5rem] bg-transparent shadow-md transition-all text-center`}
+                    variant={"rectangleWithShadow"}
+                    onClick={() => {
+                      if (showAdditionalInformation === "characteristics") {
+                        setShowAdditionalInformation("");
+                      } else {
+                        setShowAdditionalInformation("characteristics");
+                      }
+                    }}
+                  >
+                    <img
+                      src={characteristics}
+                      alt="characteristics"
+                      className="w-full "
+                    />
+                  </ButtonHoverPromptModal>
+                  <ButtonHoverPromptModal
+                    contentName={`More products from ${seller.username}`}
+                    positionByAbscissa="left"
+                    asideClasses="bottom-[-3.5rem]"
+                    className={`w-[5rem] h-[5rem] pl-[.5rem] bg-transparent shadow-md transition-all text-center`}
+                    variant={"rectangleWithShadow"}
+                    onClick={() => {
+                      if (showAdditionalInformation === "sellerProducts") {
+                        setShowAdditionalInformation("");
+                      } else {
+                        setShowAdditionalInformation("sellerProducts");
+                      }
+                    }}
+                  >
+                    <img src={owner} alt="More products" className="w-full " />
+                  </ButtonHoverPromptModal>
+                </div>
+                <OverAllRating rating={product.rating} />
+              </div>
+              <SingleItemCharacteristics
+                showAdditionalInformation={showAdditionalInformation}
+                productId={params.productId ? params.productId : ""}
+              />
+              <SellerProducts
+                category={product.category}
+                subCategory={product.subCategory}
+                productId={product._id}
+                sellerId={seller._id}
+                showAdditionalInformation={showAdditionalInformation}
+              />
+            </>
           )}
         </div>
+        <Comment productId={product._id} userId={userId} />
       </div>
 
       <LightBox isLightBox={isLightBox} setIsLightBox={setIsLightBox} />
