@@ -1,5 +1,5 @@
 import { EyeOff, User } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CommentTypes } from "../../../../types/CommentTypes";
 import { updateCommentLikes } from "./commentQueries";
 import dislike from "../../../../assets/images/Shop/comment/dislike.svg";
@@ -9,7 +9,17 @@ import FormatBigNumbers from "../../../../utilities/FormatBigNumbers";
 import useGetReactedComment from "../../../../hooks/Comment/useGetReactedComment";
 import SubCommentForm from "./SubComment/SubCommentForm";
 import SubComment from "./SubComment/SubComment";
-import useGetAllSubComments from "../../../../hooks/SubComment/useGetAllSubComments";
+import { SubCommentTypes } from "../../../../types/SubCommentTypes";
+import { getAllSubComments } from "./SubComment/subCommentQueries";
+import useGetDecodedJWTValues from "../../../../hooks/Auth/useGetDecodedJWTValues";
+
+type CommentItemTypes = {
+  setInformativeModalType: React.Dispatch<
+    React.SetStateAction<"info" | "error" | "success">
+  >;
+  setShowInformativeModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setInformativeModalMessage: React.Dispatch<React.SetStateAction<string>>;
+} & CommentTypes;
 
 export default function CommentItem({
   _id,
@@ -17,14 +27,27 @@ export default function CommentItem({
   amountOfLikes,
   text,
   userId,
-}: CommentTypes) {
+  setInformativeModalMessage,
+  setInformativeModalType,
+  setShowInformativeModal,
+}: CommentItemTypes) {
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [reply, setReply] = useState("");
 
   const [showReplies, setShowReplies] = useState(false);
-  const subComments = useGetAllSubComments({ commentId: _id });
+  const [subCommentSubmitted, setSubCommentSubmitted] = useState(false);
+  const [subComments, setSubComments] = useState<SubCommentTypes[]>([]);
+
+  useEffect(() => {
+    getAllSubComments({ commentId: _id }).then((r) => {
+      if (r) {
+        setSubComments(r);
+      }
+    });
+  }, [_id, subCommentSubmitted]);
+
   const user = useGetUser({ userId });
-  const id: string = localStorage.getItem("userId") as string;
+  const { userId: id } = useGetDecodedJWTValues();
 
   const [currentAmountOfLikes, setCurrentAmountOfLikes] =
     useState(amountOfLikes);
@@ -32,57 +55,90 @@ export default function CommentItem({
     useState(amountOfDisLikes);
 
   const reactedComment = useGetReactedComment({ commentId: _id, userId });
+
   const [currentLiked, setCurrentLiked] = useState(reactedComment?.isLiked);
+  const [reactionClicked, setReactionClicked] = useState("");
 
   useEffect(() => {
-    setCurrentLiked(reactedComment?.isLiked);
-  }, [reactedComment?.isLiked]);
+    if (reactedComment?.isLiked) {
+      setCurrentLiked(reactedComment?.isLiked);
+    }
+  }, [reactedComment]);
 
-  const handleLike = () => {
-    if (reactedComment) {
-      if (!currentLiked) {
-        setCurrentLiked(true);
-        setCurrentAmountOfLikes((prev) => (prev += 1));
-        setCurrentAmountOfDisLikes((prev) => (prev -= 1));
-        updateCommentLikes({
-          commentId: _id,
-          isLiked: true,
-          userId: id,
-        });
+  const handleLike = useCallback(() => {
+    if (id) {
+      if (reactedComment) {
+        if (!currentLiked) {
+          setCurrentLiked(true);
+          setCurrentAmountOfLikes((prev) => prev + 1);
+          setCurrentAmountOfDisLikes((prev) => prev - 1);
+          updateCommentLikes({
+            commentId: _id,
+            isLiked: true,
+            userId: id,
+          });
+        }
+      } else {
+        if (reactionClicked === "") {
+          setCurrentAmountOfLikes((prev) => prev + 1);
+          updateCommentLikes({
+            commentId: _id,
+            isLiked: true,
+            userId: id,
+          });
+        } else if (reactionClicked === "dislike") {
+          setCurrentAmountOfLikes((prev) => prev + 1);
+          updateCommentLikes({
+            commentId: _id,
+            isLiked: true,
+            userId: id,
+          });
+          setCurrentAmountOfDisLikes((prev) => prev - 1);
+        }
       }
-    } else {
-      setCurrentAmountOfLikes((prev) => (prev += 1));
-      updateCommentLikes({
-        commentId: _id,
-        isLiked: true,
-        userId: id,
-      });
     }
-  };
-  const handleDisLike = () => {
-    if (reactedComment) {
-      if (currentLiked) {
-        setCurrentLiked(false);
-        setCurrentAmountOfLikes((prev) => (prev -= 1));
-        setCurrentAmountOfDisLikes((prev) => (prev += 1));
-        updateCommentLikes({
-          commentId: _id,
-          isLiked: false,
-          userId: id,
-        });
+  }, [currentLiked, reactedComment, _id, id, reactionClicked]);
+
+  const handleDisLike = useCallback(() => {
+    if (id) {
+      if (reactedComment) {
+        if (currentLiked) {
+          setCurrentLiked(false);
+          setCurrentAmountOfLikes((prev) => prev - 1);
+          setCurrentAmountOfDisLikes((prev) => prev + 1);
+          updateCommentLikes({
+            commentId: _id,
+            isLiked: false,
+            userId: id,
+          });
+        }
+      } else {
+        if (reactionClicked === "") {
+          setCurrentAmountOfDisLikes((prev) => prev + 1);
+          updateCommentLikes({
+            commentId: _id,
+            isLiked: false,
+            userId: id,
+          });
+        } else if (reactionClicked === "like") {
+          setCurrentAmountOfLikes((prev) => prev - 1);
+          updateCommentLikes({
+            commentId: _id,
+            isLiked: false,
+            userId: id,
+          });
+          setCurrentAmountOfDisLikes((prev) => prev + 1);
+        }
       }
-    } else {
-      setCurrentAmountOfDisLikes((prev) => (prev += 1));
-      updateCommentLikes({
-        commentId: _id,
-        isLiked: false,
-        userId: id,
-      });
     }
-  };
+  }, [currentLiked, reactedComment, _id, id, reactionClicked]);
 
   return (
-    <section className="mb-[2rem]">
+    <section
+      className={`${
+        subComments.length || subCommentSubmitted ? "mb-[2rem]" : ""
+      }`}
+    >
       <div className="flex flex-col gap-[.5rem] relative">
         <div className="flex items-center">
           <User />
@@ -93,9 +149,12 @@ export default function CommentItem({
           <div className="flex items-center gap-[.3rem] text-[1.4rem] font-medium">
             <p>{FormatBigNumbers(currentAmountOfLikes)}</p>
             <button
-              onClick={handleLike}
+              onClick={() => {
+                handleLike();
+                setReactionClicked("like");
+              }}
               className={`${
-                currentLiked ? "shadow-md rounded-full" : ""
+                reactionClicked === "like" ? "shadow-md rounded-full" : ""
               } p-[.5rem] hover:scale-[1.01] active:scale-[0.98]`}
             >
               <img src={like} alt="Like" />
@@ -104,9 +163,12 @@ export default function CommentItem({
           <div className="flex items-center gap-[.3rem] text-[1.4rem] font-medium">
             <p>{FormatBigNumbers(currentAmountOfDisLikes)}</p>
             <button
-              onClick={handleDisLike}
+              onClick={() => {
+                handleDisLike();
+                setReactionClicked("dislike");
+              }}
               className={`${
-                currentLiked ? "" : "shadow-md rounded-full"
+                reactionClicked === "dislike" ? "shadow-md rounded-full" : ""
               } p-[.5rem] hover:scale-[1.01] active:scale-[0.98]`}
             >
               <img src={dislike} alt="Dislike" />
@@ -119,7 +181,11 @@ export default function CommentItem({
             reply
           </button>
         </div>
-        <div className={`${subComments.length ? "" : "hidden"}`}>
+        <div
+          className={`${
+            subComments.length || subCommentSubmitted ? "" : "hidden"
+          }`}
+        >
           <button
             onClick={() => setShowReplies(true)}
             className={`${
@@ -130,9 +196,9 @@ export default function CommentItem({
           </button>
           <button
             onClick={() => setShowReplies(false)}
-            className={`${
-              showReplies ? "" : "hidden"
-            } absolute bottom-[-3rem] left-[-.5rem] text-gray-600 hover:text-gray-800 transition-all`}
+            className={`${showReplies ? "" : "hidden"} ${
+              showReplyForm ? "bottom-[-10rem]" : "bottom-[-3rem]"
+            } absolute left-[-.5rem] text-gray-600 hover:text-gray-800 transition-all`}
           >
             <EyeOff />
           </button>
@@ -144,11 +210,22 @@ export default function CommentItem({
         setReply={setReply}
         reply={reply}
         commentId={_id}
-        userId={id}
+        userId={id ?? ""}
+        setSubCommentSubmitted={setSubCommentSubmitted}
+        setInformativeModalMessage={setInformativeModalMessage}
+        setInformativeModalType={setInformativeModalType}
+        setShowInformativeModal={setShowInformativeModal}
       />
       {subComments.length > 0 &&
         subComments?.map((sc) => (
-          <SubComment key={sc._id} {...sc} showSubComment={showReplies} />
+          <SubComment
+            key={sc._id}
+            setInformativeModalMessage={setInformativeModalMessage}
+            setInformativeModalType={setInformativeModalType}
+            setShowInformativeModal={setShowInformativeModal}
+            showSubComment={showReplies}
+            {...sc}
+          />
         ))}
     </section>
   );

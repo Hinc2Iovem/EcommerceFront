@@ -3,11 +3,8 @@ import { ReactNode, createContext, useState } from "react";
 type AuthContextTypes = {
   auth: {
     accessToken: string;
-    user: string;
   };
-  setAuth: React.Dispatch<
-    React.SetStateAction<{ accessToken: string; user: string }>
-  >;
+  setAuth: React.Dispatch<React.SetStateAction<{ accessToken: string }>>;
 };
 
 const AuthContext = createContext({} as AuthContextTypes);
@@ -17,7 +14,7 @@ type AuthProviderProps = {
 };
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [auth, setAuth] = useState({ accessToken: "", user: "" });
+  const [auth, setAuth] = useState({ accessToken: "" });
 
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>

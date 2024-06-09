@@ -70,6 +70,7 @@ export default function DefaultProductsCategoryPills({
               >
                 {Object.values(value).map((v) => (
                   <li
+                    key={v}
                     className={`${
                       currentSubCategory === v ? "bg-green-300 text-white" : ""
                     } transition-all p-[.5rem] rounded-md cursor-default`}

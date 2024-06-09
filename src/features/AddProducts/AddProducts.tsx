@@ -2,7 +2,7 @@ import { ImagePlus, Save } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosPublic } from "../../api/axios";
-import Header from "../../components/Header/Header";
+import Header from "../Header/Header";
 import { isNonEmptyMatrix } from "../../utilities/IsNonEmptyMatrix";
 import ButtonHoverPromptModal from "../shared/ButtonAsideHoverPromtModal/ButtonHoverPromptModal";
 import InputLabelGoesDown from "../shared/InputLabelGoesDown";
@@ -18,6 +18,7 @@ import {
 import ModalImages from "./ModalImages";
 import { ProductTypes } from "../../types/ProductTypes";
 import SingleItemPageShowCase from "./ShowCase/SingleItemPageShowCase";
+import useGetDecodedJWTValues from "../../hooks/Auth/useGetDecodedJWTValues";
 
 export default function AddProducts() {
   const [submitionStarted, setSubmitionStarted] = useState(false);
@@ -40,6 +41,7 @@ export default function AddProducts() {
   const [imgsPreview, setImgsPreview] = useState<string[] | ArrayBuffer | null>(
     []
   );
+  const { userId } = useGetDecodedJWTValues();
 
   const [allMainTitles, setAllMainTitles] = useState<string[]>([]);
   const [allSubTitles, setAllSubTitles] = useState<string[][]>([]);
@@ -59,8 +61,6 @@ export default function AddProducts() {
       imgsPreview.length === 3
     );
   };
-
-  console.log(canSave());
 
   const navigate = useNavigate();
 
@@ -126,7 +126,6 @@ export default function AddProducts() {
         ...prev,
         imgs: false,
       }));
-      const userId = localStorage.getItem("userId");
       const priceToNum = Number(price);
       const res = await axiosPublic.post<ProductTypes>(
         `/products/users/${userId}`,

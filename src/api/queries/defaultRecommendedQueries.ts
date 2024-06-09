@@ -1,5 +1,36 @@
-import { DefaultRecommendedProductsTypes } from "../../types/DefaultRecommendedProducts";
+import {
+  DefaultRecommendedProductsAmountTypes,
+  DefaultRecommendedProductsTypes,
+} from "../../types/DefaultRecommendedProducts";
 import { axiosPublic } from "../axios";
+
+type GetDefaultRecommendedProductsAmountTypes = {
+  sellerId: string;
+  category: string;
+  subCategory: string;
+};
+
+export const getDefaultRecommendedProductsAmount = async ({
+  category,
+  sellerId,
+  subCategory,
+}: GetDefaultRecommendedProductsAmountTypes) => {
+  try {
+    return await axiosPublic
+      .get<DefaultRecommendedProductsAmountTypes>(
+        `/defaultRecommendedProductsAmount/sellers/${sellerId}`,
+        {
+          params: {
+            category,
+            subCategory,
+          },
+        }
+      )
+      .then((r) => r.data);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 type GetDefaultRecommendedProductsTypes = {
   sellerId: string;
@@ -35,7 +66,7 @@ type GetSingledefaultRecommendedProductsTypes = {
   productId: string;
 };
 
-export const getSingleDefaultRecommendedProducts = async ({
+export const getSingleDefaultRecommendedProduct = async ({
   category,
   subCategory,
   productId,
@@ -73,7 +104,7 @@ export const addToDefaultRecommendedProducts = async ({
 }: AddDefaultRecommendedProductTypes) => {
   try {
     return await axiosPublic
-      .post(`/defaultRecommendedProducts/sellers/${sellerId}`, {
+      .put(`/defaultRecommendedProducts/sellers/${sellerId}`, {
         productId,
         subCategory,
         category,
@@ -86,21 +117,21 @@ export const addToDefaultRecommendedProducts = async ({
 
 type RemoveDefaultRecommendedProductTypes = {
   sellerId: string;
-  defaultRecommendedProductId: string;
+  productId: string;
   subCategory: string;
   category: string;
 };
 
 export const removeFromDefaultRecommendedProducts = async ({
   sellerId,
-  defaultRecommendedProductId,
+  productId,
   category,
   subCategory,
 }: RemoveDefaultRecommendedProductTypes) => {
   try {
     return await axiosPublic
       .delete(
-        `/defaultRecommendedProducts/${defaultRecommendedProductId}/sellers/${sellerId}`,
+        `/defaultRecommendedProducts/products/${productId}/sellers/${sellerId}`,
         {
           params: {
             category,

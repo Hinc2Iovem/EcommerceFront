@@ -8,7 +8,6 @@ type OverAllRatingTypes = {
 export default function OverAllRating({ rating }: OverAllRatingTypes) {
   const numberRef = useRef<HTMLParagraphElement | null>(null);
   const [style, setStyle] = useState({});
-  console.log(numberRef.current?.clientHeight);
 
   useEffect(() => {
     if (numberRef.current) {

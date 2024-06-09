@@ -8,12 +8,8 @@ export const axiosPublic = axios.create({
 
 export const axiosPrivate = axios.create({
   baseURL: BASE_URL,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true,
-});
-
-export const apiFakeStore = axios.create({
-  baseURL: "https://fakestoreapi.com",
 });

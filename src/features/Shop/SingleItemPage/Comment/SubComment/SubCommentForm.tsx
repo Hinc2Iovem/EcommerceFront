@@ -8,6 +8,12 @@ type SubCommentTypes = {
   showReplyForm: boolean;
   commentId: string;
   userId: string;
+  setSubCommentSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
+  setInformativeModalType: React.Dispatch<
+    React.SetStateAction<"info" | "error" | "success">
+  >;
+  setShowInformativeModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setInformativeModalMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export default function SubCommentForm({
@@ -17,13 +23,25 @@ export default function SubCommentForm({
   setReply,
   commentId,
   userId,
+  setSubCommentSubmitted,
+  setInformativeModalMessage,
+  setInformativeModalType,
+  setShowInformativeModal,
 }: SubCommentTypes) {
   useEscapeOfModal({ value: showReplyForm, setValue: setShowReplyForm });
   const handleAddingReply = (e: React.FormEvent) => {
     e.preventDefault();
-    createSubComment({ commentId, text: reply, userId });
-    setReply("");
-    setShowReplyForm(false);
+    if (userId) {
+      createSubComment({ commentId, text: reply, userId }).then(() =>
+        setSubCommentSubmitted((prev) => !prev)
+      );
+      setReply("");
+      setShowReplyForm(false);
+    } else {
+      setInformativeModalMessage("You need to Register first");
+      setInformativeModalType("info");
+      setShowInformativeModal((prev) => !prev);
+    }
   };
   return (
     <form

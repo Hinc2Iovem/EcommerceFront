@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getProductById } from "../../api/queries/productQueries";
 import { ProductTypes } from "../../types/ProductTypes";
+import { getProductById } from "../../api/queries/productQueries";
 
 export default function useGetProductById(
   productId: string | undefined

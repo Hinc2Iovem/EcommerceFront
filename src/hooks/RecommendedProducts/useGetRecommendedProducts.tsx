@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getRecommendedSellerProducts } from "../../features/Shop/SingleItemPage/SellerProducts/recommendedProductsQueries";
 import { RecommendedProductsTypes } from "../../types/RecommendedProducts";
+import { getRecommendedProducts } from "../../api/queries/recommendedQueries";
 
 export default function useGetRecommendedProducts({
   productId,
@@ -9,7 +9,7 @@ export default function useGetRecommendedProducts({
 }) {
   const [products, setProducts] = useState<RecommendedProductsTypes[] | []>([]);
   useEffect(() => {
-    getRecommendedSellerProducts({ productId }).then((r) => {
+    getRecommendedProducts({ productId }).then((r) => {
       if (r) {
         setProducts(r);
       }

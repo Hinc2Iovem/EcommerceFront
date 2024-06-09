@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import creditCard from "../../assets/images/profile/creditCard.png";
 import { addMoney } from "./profileQueries";
 
 const CHECK_NUMBER = /^\d+$/;
@@ -48,29 +47,33 @@ export default function MoneyModel({
     }
   }, [error, money]);
 
+  useEffect(() => {
+    setMoney("");
+  }, [moneyModal]);
+
   return (
     <aside
       ref={secondModalRef}
       className={`${
-        moneyModal ? "" : "hidden"
-      } absolute top-[5rem] right-0 z-[1] bg-neutral-magnolia w-[20rem] shadow-sm h-[6.5rem] rounded-md p-[1rem]`}
+        moneyModal ? "top-[5rem]" : "top-[-30rem]"
+      } absolute transition-all right-0 z-[1] bg-white w-[25rem] sm:w-[30rem] shadow-md h-[10rem] rounded-md p-[1rem]`}
     >
-      <div className="absolute w-full flex justify-between items-center bottom-[-.3rem]">
+      <div className="absolute w-full flex justify-between items-center bottom-[.3rem]">
         {error ? (
           <p className="text-[1.4rem] text-red-400">Only numbers</p>
         ) : (
           ""
         )}
-        <img src={creditCard} alt="" className="w-[3rem]" />
       </div>
       <form onSubmit={handleSubmit} noValidate>
         <input
           className={`${
             error
               ? "border-red-500 border-[2px] border-dotted text-red-400"
-              : ""
-          } w-full outline-none text-gray-600 p-[.1rem]`}
+              : "border-gray-600 border-[2px] border-dotted"
+          } w-full outline-none text-gray-600 p-[.3rem] px-[.5rem]`}
           type="text"
+          placeholder="1000000"
           value={money}
           onChange={(e) => setMoney(e.target.value)}
         />

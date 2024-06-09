@@ -20,14 +20,9 @@ type RecommendedProductItemTypes = {
 
 export default function RecommendedProductItem({
   _id,
-  brand,
-  category,
   frontImg,
   price,
-  rating,
-  subCategory,
   title,
-  userId,
   currentProductId,
   carouselProductIds,
   productAmount,
@@ -53,7 +48,7 @@ export default function RecommendedProductItem({
       recommendedProductId: _id,
       productId: currentProductId,
     });
-    if (productAmount && currentProductId) {
+    if (productAmount || (productAmount === 0 && currentProductId)) {
       setProductAmount((prev) => (prev += 1));
     } else {
       setProductAmount(10);
@@ -97,8 +92,10 @@ export default function RecommendedProductItem({
           } absolute hover:scale-[1.02] active:scale-[0.98]`}
           onClick={() => {
             if (currentProductId && currentProductId !== _id) {
-              handleAddingToRecommended();
-              setCarouselProductIds((prev) => [...prev, _id]);
+              if (productAmount && productAmount >= 1) {
+                handleAddingToRecommended();
+                setCarouselProductIds((prev) => [...prev, _id]);
+              }
             } else {
               setCurrentProductId(_id);
             }

@@ -1,29 +1,77 @@
+import {
+  addToDefaultRecommendedProducts,
+  removeFromDefaultRecommendedProducts,
+} from "../../../api/queries/defaultRecommendedQueries";
 import { Link } from "react-router-dom";
 import { ProductTypes } from "../../../types/ProductTypes";
+import { useEffect, useState } from "react";
 import FormatCurrency from "../../../utilities/FormatCurrency";
 import plus from "../../../assets/images/shared/plus.png";
 import minus from "../../../assets/images/shared/minus.png";
+import useGetSingleDefaultRecommendedProduct from "../../../hooks/RecommendedProducts/useGetSingleDefaultRecommendedProduct";
+
+type DefaultProductItemTypes = {
+  setCurrentValue: React.Dispatch<React.SetStateAction<number | undefined>>;
+} & ProductTypes;
 
 export default function DefaultProductItem({
   _id,
-  amountOfRatings,
-  amountOfReports,
-  brand,
   category,
-  description,
   frontImg,
-  imgUrls,
-  isActive,
-  isAvailable,
   price,
-  rating,
   subCategory,
   title,
   userId,
-}: ProductTypes) {
+  setCurrentValue,
+}: DefaultProductItemTypes) {
+  const [listOfRecommendeProductIds, setListOfRecommendedProductIds] = useState<
+    string[]
+  >([]);
+
+  const alreadyRecommended = useGetSingleDefaultRecommendedProduct({
+    category,
+    productId: _id,
+    subCategory,
+  });
+
+  useEffect(() => {
+    if (alreadyRecommended) {
+      setListOfRecommendedProductIds((prev) => [...prev, _id]);
+    }
+  }, [_id, alreadyRecommended]);
+
+  const handleAddingToRecommended = () => {
+    setCurrentValue((prev) => {
+      if (prev) {
+        return (prev += 1);
+      }
+    });
+    setListOfRecommendedProductIds((prev) => [...prev, _id]);
+    addToDefaultRecommendedProducts({
+      category,
+      productId: _id,
+      sellerId: userId,
+      subCategory,
+    });
+  };
+
+  const handleRemovingFromRecommended = () => {
+    setCurrentValue((prev) => {
+      if (prev) {
+        return (prev -= 1);
+      }
+    });
+    setListOfRecommendedProductIds((prev) => prev.filter((p) => p !== _id));
+    removeFromDefaultRecommendedProducts({
+      category,
+      sellerId: userId,
+      subCategory,
+      productId: _id,
+    });
+  };
   return (
     <div
-      className={`w-full max-w-[50rem] bg-white h-full overflow-hidden p-[1rem] rounded-lg border-primary-pastel-blue border-[3px] border-dotted flex flex-col gap-[1rem] justify-between`}
+      className={`w-full mx-auto max-w-[50rem] bg-white h-full overflow-hidden p-[1rem] rounded-lg border-primary-pastel-blue border-[3px] border-dotted flex flex-col gap-[1rem] justify-between`}
     >
       <img
         src={frontImg}
@@ -42,8 +90,21 @@ export default function DefaultProductItem({
           Price: {FormatCurrency(Number(price))}
         </h5>
       </div>
-      <button className={`absolute hover:scale-[1.02] active:scale-[0.98]`}>
+      <button
+        onClick={handleAddingToRecommended}
+        className={`${
+          listOfRecommendeProductIds.includes(_id) ? "hidden" : ""
+        } absolute hover:scale-[1.02] active:scale-[0.98]`}
+      >
         <img className="w-[3rem]" src={plus} alt="Add" />
+      </button>
+      <button
+        onClick={handleRemovingFromRecommended}
+        className={`${
+          listOfRecommendeProductIds.includes(_id) ? "" : "hidden"
+        } absolute hover:scale-[1.02] active:scale-[0.98]`}
+      >
+        <img className="w-[3rem]" src={minus} alt="Remove" />
       </button>
     </div>
   );

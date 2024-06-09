@@ -7,11 +7,13 @@ export default function useGetFavouriteByProductIdUserId({
   userId,
 }: {
   productId: string | undefined;
-  userId: string;
+  userId: string | undefined;
 }) {
   const [favourite, setFavourite] = useState<FavouriteTypes | null>(null);
   useEffect(() => {
-    getFavourite({ productId, userId }).then((r) => setFavourite(r));
+    if (userId) {
+      getFavourite({ productId, userId }).then((r) => setFavourite(r));
+    }
   }, [userId, productId]);
   return favourite;
 }

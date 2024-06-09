@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { CATEGORIES_SELLER } from "../../const/CATEGORIES_SELLER";
 import { CATEGORIES_WITHOUT_SUBCATEGORIES } from "../../const/PillsCategories";
-import Header from "../../components/Header/Header";
+import Header from "../Header/Header";
 import useGetUser from "../../hooks/Profile/useGetUser";
 import ButtonHoverPromptModal from "../shared/ButtonAsideHoverPromtModal/ButtonHoverPromptModal";
 import ProfileFooter from "./ProfileFooter";
@@ -14,19 +14,26 @@ import MoneyModel from "./MoneyModel";
 import dollar from "../../assets/images/profile/dollar.png";
 import recommendation from "../../assets/images/profile/recommendation.png";
 import defaultRecommendation from "../../assets/images/profile/defaultRecommendation.png";
+import useGetDecodedJWTValues from "../../hooks/Auth/useGetDecodedJWTValues";
 
 export default function Profile() {
   const [currentCategory, setCurrentCategory] = useState(
     CATEGORIES_WITHOUT_SUBCATEGORIES.All
   );
-  const userId: string = localStorage.getItem("userId") as string;
-  const { roles, _id: id, balance, username } = useGetUser({ userId });
+  const { userId } = useGetDecodedJWTValues();
+  const {
+    roles,
+    _id: id,
+    balance,
+    username,
+  } = useGetUser({ userId: userId ?? "" });
   const [currentCategoryUser, setCurrentCategoryUser] = useState(
     CATEGORIES_SELLER.SELLING_PRODUCTS
   );
-
+  const [value, setValue] = useState("");
   const [updatedMoney, setUpdatedMoney] = useState(balance ? balance : 0);
   const [moneyModal, setMoneyModal] = useState(false);
+
   useEffect(() => {
     if (balance) {
       setUpdatedMoney(balance);
@@ -42,6 +49,7 @@ export default function Profile() {
     setShowModal: setMoneyModal,
     showModal: moneyModal,
   });
+
   return (
     <>
       <section
@@ -50,6 +58,7 @@ export default function Profile() {
         }  items-center`}
       >
         <Header
+          setValue={setValue}
           currentCategory={currentCategory}
           setCurrentCategory={setCurrentCategory}
         />
@@ -74,44 +83,46 @@ export default function Profile() {
               </Link>
             </div>
 
-            <div
-              className={`${
-                roles?.includes("Seller") ? "visible" : "hidden"
-              } mb-[1rem] flex gap-[.5rem] ml-auto`}
-            >
-              <Link to="/add/products">
-                <ButtonHoverPromptModal
-                  className="bg-white m-0 shadow-md hover:bg-primary-orange font-medium w-[4rem] h-[4rem] p-[.5rem]"
-                  variant="rectangleWithShadow"
-                  contentName="Add Product"
-                  positionByAbscissa="right"
-                >
-                  <ListPlus className="w-full h-full" />
-                </ButtonHoverPromptModal>
-              </Link>
-              <Link to="/defaultProducts">
-                <ButtonHoverPromptModal
-                  className="bg-white m-0 shadow-md w-[4rem] h-[4rem] p-[.5rem] active:scale-[0.96]"
-                  variant="rectangleWithShadow"
-                  contentName="Add Default Recommendations"
-                  positionByAbscissa="right"
-                >
-                  <img
-                    src={defaultRecommendation}
-                    alt="defaultRecommendations"
-                  />
-                </ButtonHoverPromptModal>
-              </Link>
-              <Link to="/recommendedProducts">
-                <ButtonHoverPromptModal
-                  className="bg-white m-0 shadow-md w-[4rem] h-[4rem] p-[.5rem] active:scale-[0.96]"
-                  variant="rectangleWithShadow"
-                  contentName="Add Recommendations"
-                  positionByAbscissa="right"
-                >
-                  <img src={recommendation} alt="Recommendations" />
-                </ButtonHoverPromptModal>
-              </Link>
+            <div className={`mb-[1rem] flex gap-[.5rem] ml-auto`}>
+              <div
+                className={`${
+                  roles?.includes("Seller") ? "visible" : "hidden"
+                } flex gap-[.5rem]`}
+              >
+                <Link to="/add/products">
+                  <ButtonHoverPromptModal
+                    className="bg-white m-0 shadow-md hover:bg-primary-orange font-medium w-[4rem] h-[4rem] p-[.5rem]"
+                    variant="rectangleWithShadow"
+                    contentName="Add Product"
+                    positionByAbscissa="right"
+                  >
+                    <ListPlus className="w-full h-full" />
+                  </ButtonHoverPromptModal>
+                </Link>
+                <Link to="/defaultProducts">
+                  <ButtonHoverPromptModal
+                    className="bg-white m-0 shadow-md w-[4rem] h-[4rem] p-[.5rem] active:scale-[0.96]"
+                    variant="rectangleWithShadow"
+                    contentName="Add Default Recommendations"
+                    positionByAbscissa="right"
+                  >
+                    <img
+                      src={defaultRecommendation}
+                      alt="defaultRecommendations"
+                    />
+                  </ButtonHoverPromptModal>
+                </Link>
+                <Link to="/recommendedProducts">
+                  <ButtonHoverPromptModal
+                    className="bg-white m-0 shadow-md w-[4rem] h-[4rem] p-[.5rem] active:scale-[0.96]"
+                    variant="rectangleWithShadow"
+                    contentName="Add Recommendations"
+                    positionByAbscissa="right"
+                  >
+                    <img src={recommendation} alt="Recommendations" />
+                  </ButtonHoverPromptModal>
+                </Link>
+              </div>
 
               <div ref={modalRef}>
                 <ButtonHoverPromptModal
@@ -132,7 +143,7 @@ export default function Profile() {
               </div>
             </div>
             <MoneyModel
-              userId={userId}
+              userId={userId ?? ""}
               setUpdatedMoney={setUpdatedMoney}
               setMoneyModal={setMoneyModal}
               moneyModal={moneyModal}

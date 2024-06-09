@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import useGetProductsByUserId from "../../../hooks/Profile/useGetProductsByUserId";
 import { ProductTypes } from "../../../types/ProductTypes";
 import DefaultProductItem from "./DefaultProductItem";
@@ -8,6 +8,7 @@ type DefaultProductsListTypes = {
   currentSubCategory: string;
   debouncedValue: string;
   userId: string;
+  setCurrentValue: React.Dispatch<React.SetStateAction<number | undefined>>;
 };
 
 export default function DefaultProductsList({
@@ -15,6 +16,7 @@ export default function DefaultProductsList({
   currentSubCategory,
   debouncedValue,
   userId,
+  setCurrentValue,
 }: DefaultProductsListTypes) {
   const products = useGetProductsByUserId({ userId });
   const productsToDisplay: ProductTypes[] = useMemo(() => {
@@ -50,10 +52,14 @@ export default function DefaultProductsList({
     <div
       className={`${
         currentCategory && currentSubCategory ? "" : "hidden"
-      } grid grid-cols-[repeat(auto-fit,minmax(30rem,1fr))] gap-[1rem]`}
+      } grid grid-cols-[repeat(auto-fill,minmax(30rem,1fr))] gap-[1rem]`}
     >
       {productsToDisplay.map((p) => (
-        <DefaultProductItem key={p._id} {...p} />
+        <DefaultProductItem
+          key={p._id}
+          setCurrentValue={setCurrentValue}
+          {...p}
+        />
       ))}
     </div>
   );

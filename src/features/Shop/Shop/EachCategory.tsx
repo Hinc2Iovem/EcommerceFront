@@ -46,9 +46,9 @@ export default function EachCategory({
                 }}
                 className={`${
                   subK === subCurrentCategory
-                    ? "shadow-inner shadow-gray-600 text-black p-[1rem]"
-                    : " shadow-inner  p-[.5rem] text-gray-700 shadow-gray-500 hover:p-[.7rem] "
-                } flex font-medium items-center gap-[.4rem] transition-all rounded-lg w-full`}
+                    ? "text-black p-[1rem] border-b-[2px] border-black"
+                    : "p-[.5rem] text-gray-700 hover:p-[.7rem] "
+                } flex font-medium items-center gap-[.4rem] transition-all rounded-sm w-full`}
               >
                 {subK}
               </button>

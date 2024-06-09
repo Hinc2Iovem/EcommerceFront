@@ -1,5 +1,5 @@
 import { User } from "lucide-react";
-import Header from "../../components/Header/Header";
+import Header from "../Header/Header";
 import InputLabelGoesDown from "../shared/InputLabelGoesDown";
 import { useState } from "react";
 
@@ -8,10 +8,11 @@ const basicRejectionResponse =
 
 export default function Permission() {
   const [rejectionReason, setRejectionReason] = useState("");
+  const [value, setValue] = useState("");
 
   return (
     <>
-      <Header showPillsOrNot={false} />
+      <Header setValue={setValue} showPillsOrNot={false} />
       <section className="max-w-[146rem] m-auto p-[1rem]">
         <div className="mt-[3rem] w-full flex flex-col gap-[1rem] p-[1rem]">
           <div className="bg-white flex flex-col gap-[.5rem] p-[1rem] rounded-lg shadow-sm shadow-black">

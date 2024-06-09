@@ -9,6 +9,7 @@ import {
 import useDebounce from "../../hooks/useDebounce";
 import FormatCurrency from "../../utilities/FormatCurrency";
 import { Link } from "react-router-dom";
+import noSuchProductImg from "../../assets/images/shared/noProduct.png";
 
 type ProfileProductsSideTypes = {
   userId: string;
@@ -29,6 +30,11 @@ export default function ProfileProductsSide({
   );
   const [boughtProducts, setBoughtProducts] = useState<ProductTypes[] | []>([]);
   const [soldProducts, setSoldProducts] = useState<ProductTypes[] | []>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+  }, []);
 
   useEffect(() => {
     getProductsByUserId({ userId }).then((r) => {
@@ -77,6 +83,7 @@ export default function ProfileProductsSide({
             .includes(debouncedValue.trim().toLowerCase())
       );
     }
+    setLoading(false);
     return filtered;
   }, [
     sellingProducts,
@@ -90,22 +97,68 @@ export default function ProfileProductsSide({
   return (
     <div className="flex-grow">
       <SearchBar setValue={setValue} />
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(25rem,1fr))] grid-rows-[repeat(auto-fit,minmax(30rem,1fr))] p-3 gap-3 justify-items-center items-center">
-        {productsToDisplay.map((p) => (
-          <ProfileProductItem key={p._id} product={p} />
-        ))}
+      <div
+        className={`${
+          loading || productsToDisplay.length
+            ? "grid grid-cols-[repeat(auto-fill,minmax(25rem,1fr))] grid-rows-[repeat(auto-fit,minmax(30rem,1fr))]"
+            : ""
+        }  p-3 gap-3 `}
+      >
+        {loading ? (
+          <>
+            <div className="w-full h-[50rem] bg-white rounded-lg border-primary-pastel-blue border-[3px] border-dotted"></div>
+            <div className="w-full h-[50rem] bg-white rounded-lg border-primary-pastel-blue border-[3px] border-dotted"></div>
+            <div className="w-full h-[50rem] bg-white rounded-lg border-primary-pastel-blue border-[3px] border-dotted"></div>
+            <div className="w-full h-[50rem] bg-white rounded-lg border-primary-pastel-blue border-[3px] border-dotted"></div>
+            <div className="w-full h-[50rem] bg-white rounded-lg border-primary-pastel-blue border-[3px] border-dotted"></div>
+            <div className="w-full h-[50rem] bg-white rounded-lg border-primary-pastel-blue border-[3px] border-dotted"></div>
+          </>
+        ) : productsToDisplay.length ? (
+          productsToDisplay.map((p) => (
+            <ProfileProductItem
+              key={p._id}
+              product={p}
+              currentCategoryUser={currentCategoryUser}
+            />
+          ))
+        ) : !productsToDisplay.length && !loading ? (
+          <div className="mx-auto w-fit mt-[5rem] flex flex-col items-center gap-[1.5rem]">
+            <img src={noSuchProductImg} alt="No such product" />
+            <h2 className="text-[4rem] mr-[1rem] text-center">
+              Nothing to show
+            </h2>
+          </div>
+        ) : null}
       </div>
     </div>
   );
 }
 
+type ProductWithQuantityTypes = {
+  quantity?: number;
+} & ProductTypes;
+
 type ProfileProductItemTypes = {
-  product: ProductTypes;
+  product: ProductWithQuantityTypes;
+  currentCategoryUser: string;
 };
 
-function ProfileProductItem({ product }: ProfileProductItemTypes) {
+function ProfileProductItem({
+  product,
+  currentCategoryUser,
+}: ProfileProductItemTypes) {
   return (
-    <div className="bg-white w-full h-full overflow-hidden p-[1rem] rounded-lg border-primary-pastel-blue border-[3px] border-dotted flex flex-col gap-[1rem] justify-between">
+    <div className="bg-white w-full h-full overflow-hidden p-[1rem] rounded-lg border-primary-pastel-blue border-[3px] border-dotted flex flex-col gap-[1rem] justify-between relative">
+      <p
+        className={`${
+          currentCategoryUser === "Sold Products" ||
+          currentCategoryUser === "Bought Products"
+            ? ""
+            : "hidden"
+        } absolute right-[1rem] top-[1rem] z-[1] font-medium text-[1.5rem]`}
+      >
+        x{product.quantity && product.quantity}
+      </p>
       <img
         src={product.frontImg}
         alt={product.title}

@@ -32,7 +32,7 @@ export default function RecommendedCarouselItem({
   };
   return (
     <div
-      className={`min-w-[20rem] h-[40rem] w-full bg-white overflow-hidden p-[1rem] rounded-lg border-primary-pastel-blue border-[3px] border-dotted flex flex-col gap-[1rem] justify-between`}
+      className={`min-w-[20rem] h-[40rem] w-full max-w-[50rem] bg-white overflow-hidden p-[1rem] rounded-lg border-primary-pastel-blue border-[3px] border-dotted flex flex-col gap-[1rem] justify-between`}
     >
       <img
         src={recommendedProduct.frontImg}

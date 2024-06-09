@@ -3,15 +3,19 @@ import { SubCommentTypes } from "../../../../../types/SubCommentTypes";
 import dislike from "../../../../../assets/images/Shop/comment/dislike.svg";
 import like from "../../../../../assets/images/Shop/comment/like.svg";
 import useGetUser from "../../../../../hooks/Profile/useGetUser";
-import { useEffect, useState } from "react";
-import { updateSubCommentLikes } from "./subCommentQueries";
+import { useCallback, useEffect, useState } from "react";
+import { getAllSubComments, updateSubCommentLikes } from "./subCommentQueries";
 import useGetReactedSubComment from "../../../../../hooks/SubComment/useGetReactedSubComment";
 import FormatBigNumbers from "../../../../../utilities/FormatBigNumbers";
 import SubCommentForm from "./SubCommentForm";
-import useGetAllSubComments from "../../../../../hooks/SubComment/useGetAllSubComments";
 
 export type SubCommentComponentTypes = {
   showSubComment: boolean;
+  setInformativeModalType: React.Dispatch<
+    React.SetStateAction<"info" | "error" | "success">
+  >;
+  setShowInformativeModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setInformativeModalMessage: React.Dispatch<React.SetStateAction<string>>;
 } & SubCommentTypes;
 
 export default function SubComment({
@@ -21,6 +25,9 @@ export default function SubComment({
   text,
   userId,
   showSubComment,
+  setInformativeModalMessage,
+  setInformativeModalType,
+  setShowInformativeModal,
 }: SubCommentComponentTypes) {
   const user = useGetUser({ userId });
 
@@ -34,16 +41,28 @@ export default function SubComment({
 
   const reactedComment = useGetReactedSubComment({ subCommentId: _id, userId });
   const [currentLiked, setCurrentLiked] = useState(reactedComment?.isLiked);
+  const [reactionClicked, setReactionClicked] = useState("");
 
-  const subComments = useGetAllSubComments({ commentId: _id });
+  const [subCommentSubmitted, setSubCommentSubmitted] = useState(false);
+  const [subComments, setSubComments] = useState<SubCommentTypes[]>([]);
 
   useEffect(() => {
-    setCurrentLiked(reactedComment?.isLiked);
-  }, [reactedComment?.isLiked]);
+    getAllSubComments({ commentId: _id }).then((r) => {
+      if (r) {
+        setSubComments(r);
+      }
+    });
+  }, [_id, subCommentSubmitted]);
+
+  useEffect(() => {
+    if (reactedComment) {
+      setCurrentLiked(reactedComment?.isLiked);
+    }
+  }, [reactedComment]);
 
   const [reply, setReply] = useState("");
 
-  const handleLike = () => {
+  const handleLike = useCallback(() => {
     if (reactedComment) {
       if (!currentLiked) {
         setCurrentLiked(true);
@@ -56,15 +75,21 @@ export default function SubComment({
         });
       }
     } else {
-      setCurrentAmountOfLikes((prev) => (prev += 1));
-      updateSubCommentLikes({
-        subCommentId: _id,
-        isLiked: true,
-        userId: user._id,
-      });
+      if (reactionClicked === "") {
+        setCurrentAmountOfLikes((prev) => (prev += 1));
+        updateSubCommentLikes({
+          subCommentId: _id,
+          isLiked: true,
+          userId: user._id,
+        });
+      } else if (reactionClicked === "dislike") {
+        setCurrentAmountOfDisLikes((prev) => (prev -= 1));
+        setCurrentAmountOfLikes((prev) => (prev += 1));
+      }
     }
-  };
-  const handleDisLike = () => {
+  }, [_id, currentLiked, reactedComment, reactionClicked, user._id]);
+
+  const handleDisLike = useCallback(() => {
     if (reactedComment) {
       if (currentLiked) {
         setCurrentLiked(false);
@@ -77,14 +102,19 @@ export default function SubComment({
         });
       }
     } else {
-      setCurrentAmountOfDisLikes((prev) => (prev += 1));
-      updateSubCommentLikes({
-        subCommentId: _id,
-        isLiked: false,
-        userId: user._id,
-      });
+      if (reactionClicked === "") {
+        setCurrentAmountOfDisLikes((prev) => (prev += 1));
+        updateSubCommentLikes({
+          subCommentId: _id,
+          isLiked: false,
+          userId: user._id,
+        });
+      } else if (reactionClicked === "like") {
+        setCurrentAmountOfDisLikes((prev) => (prev += 1));
+        setCurrentAmountOfLikes((prev) => (prev -= 1));
+      }
     }
-  };
+  }, [_id, currentLiked, reactedComment, reactionClicked, user._id]);
 
   return (
     <section
@@ -102,9 +132,15 @@ export default function SubComment({
           <div className="flex items-center gap-[.3rem] text-[1.4rem] font-medium">
             <p>{FormatBigNumbers(currentAmountOfLikes)}</p>
             <button
-              onClick={handleLike}
+              onClick={() => {
+                handleLike();
+                setReactionClicked("like");
+              }}
               className={`${
-                currentLiked ? "shadow-md rounded-full" : ""
+                reactionClicked === "like" ||
+                (currentLiked && subComments.length)
+                  ? "shadow-md rounded-full"
+                  : ""
               } p-[.5rem] hover:scale-[1.01] active:scale-[0.98]`}
             >
               <img src={like} alt="Like" />
@@ -113,9 +149,15 @@ export default function SubComment({
           <div className="flex items-center gap-[.3rem] text-[1.4rem] font-medium">
             <p>{FormatBigNumbers(currentAmountOfDisLikes)}</p>
             <button
-              onClick={handleDisLike}
+              onClick={() => {
+                handleDisLike();
+                setReactionClicked("dislike");
+              }}
               className={`${
-                currentLiked ? "" : "shadow-md rounded-full"
+                reactionClicked === "dislike" ||
+                (!currentLiked && subComments.length)
+                  ? "shadow-md rounded-full"
+                  : ""
               } p-[.5rem] hover:scale-[1.01] active:scale-[0.98]`}
             >
               <img src={dislike} alt="Dislike" />
@@ -128,36 +170,47 @@ export default function SubComment({
             reply
           </button>
         </div>
-        <div className={`${subComments.length ? "" : "hidden"}`}>
+        <div className={`${subComments.length ? "mb-[1rem]" : "hidden"}`}>
           <button
             onClick={() => setShowReplies(true)}
             className={`${
               showReplies ? "hidden" : ""
-            } absolute bottom-[-2.5rem] text-gray-600 hover:text-gray-800 transition-all`}
+            } absolute bottom-[-.8rem] left-[-1rem] text-gray-600 hover:text-gray-800 transition-all`}
           >
             See Replies
           </button>
           <button
             onClick={() => setShowReplies(false)}
-            className={`${
-              showReplies ? "" : "hidden"
-            } absolute bottom-[-3rem] left-[-.5rem] text-gray-600 hover:text-gray-800 transition-all`}
+            className={`${showReplies ? "" : "hidden"} ${
+              showReplyForm ? "bottom-[-10rem]" : "bottom-[-3rem]"
+            } absolute left-[-.5rem] text-gray-600 hover:text-gray-800 transition-all`}
           >
             <EyeOff />
           </button>
         </div>
       </div>
       <SubCommentForm
+        setSubCommentSubmitted={setSubCommentSubmitted}
         setShowReplyForm={setShowReplyForm}
         showReplyForm={showReplyForm}
         setReply={setReply}
         reply={reply}
         commentId={_id}
         userId={user._id}
+        setInformativeModalMessage={setInformativeModalMessage}
+        setInformativeModalType={setInformativeModalType}
+        setShowInformativeModal={setShowInformativeModal}
       />
       {subComments.length > 0 &&
         subComments?.map((sc) => (
-          <SubComment key={sc._id} {...sc} showSubComment={showReplies} />
+          <SubComment
+            key={sc._id}
+            setInformativeModalMessage={setInformativeModalMessage}
+            setInformativeModalType={setInformativeModalType}
+            setShowInformativeModal={setShowInformativeModal}
+            showSubComment={showReplies}
+            {...sc}
+          />
         ))}
     </section>
   );

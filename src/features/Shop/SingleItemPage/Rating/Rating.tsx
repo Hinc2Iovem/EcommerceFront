@@ -9,6 +9,9 @@ type RatingTypes = {
   productId: string;
   userId: string;
   mobile: boolean;
+  setOverAllRating: React.Dispatch<React.SetStateAction<number>>;
+  setShowInformativeModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setInformativeModalLinkMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export default function Rating({
@@ -16,17 +19,26 @@ export default function Rating({
   productId,
   userId,
   mobile,
+  setOverAllRating,
+  setShowInformativeModal,
+  setInformativeModalLinkMessage,
 }: RatingTypes) {
+  const [currentRating, setCurrentRating] = useState(rating);
   const [hoverRating, setHoverRating] = useState<number | null>(null);
-  const [currentRating, setCurrentRating] = useState<number>(rating);
   const ratingDivRef = useRef<HTMLDivElement | null>(null);
 
-  const handleClick = (rating: number) => {
-    setCurrentRating(() => {
-      const newRating = rating;
-      updateRating({ rating: newRating, productId, userId });
-      return newRating;
-    });
+  const handleClick = (newRating: number) => {
+    if (userId) {
+      setCurrentRating(newRating);
+      updateRating({ rating: newRating, productId, userId }).then((r) => {
+        if (r) {
+          setOverAllRating(r);
+        }
+      });
+    } else {
+      setInformativeModalLinkMessage("Register");
+      setShowInformativeModal((prev) => !prev);
+    }
   };
 
   const handleMouseEnter = (rating: number) => {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getDefaultRecommendedSellerProductsAmount } from "../../features/DefaultProducts/defaultQueries";
 import { DefaultRecommendedProductsAmountTypes } from "../../types/DefaultRecommendedProducts";
+import { getDefaultRecommendedProductsAmount } from "../../api/queries/defaultRecommendedQueries";
 
 type GetDefaultProductsTypes = {
   category: string;
@@ -15,7 +15,7 @@ export default function useDefaultRecommendedProductsAmount({
   const [products, setProducts] =
     useState<DefaultRecommendedProductsAmountTypes>();
   useEffect(() => {
-    getDefaultRecommendedSellerProductsAmount({
+    getDefaultRecommendedProductsAmount({
       category,
       sellerId,
       subCategory,

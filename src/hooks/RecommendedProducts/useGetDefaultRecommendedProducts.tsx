@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getDefaultRecommendedSellerProducts } from "../../features/Shop/SingleItemPage/SellerProducts/recommendedProductsQueries";
 import { DefaultRecommendedProductsTypes } from "../../types/DefaultRecommendedProducts";
+import { getDefaultRecommendedProducts } from "../../api/queries/defaultRecommendedQueries";
 
 type GetDefaultProductsTypes = {
   category: string;
@@ -17,7 +17,7 @@ export default function useGetDefaultRecommendedProducts({
     DefaultRecommendedProductsTypes[] | []
   >([]);
   useEffect(() => {
-    getDefaultRecommendedSellerProducts({
+    getDefaultRecommendedProducts({
       category,
       sellerId,
       subCategory,

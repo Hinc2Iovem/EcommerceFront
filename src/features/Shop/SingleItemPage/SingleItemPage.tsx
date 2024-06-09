@@ -7,7 +7,7 @@ import characteristics from "../../../assets/images/SingleItemPage/characteristi
 import owner from "../../../assets/images/SingleItemPage/owner.png";
 import heart from "../../../assets/images/Shop/heart.png";
 import hollowHeart from "../../../assets/images/Shop/hollowHeart.png";
-import Header from "../../../components/Header/Header";
+import Header from "../../Header/Header";
 import useMatchMedia from "../../../hooks/useMatchMedia";
 import ButtonHoverPromptModal from "../../shared/ButtonAsideHoverPromtModal/ButtonHoverPromptModal";
 import LightBox from "../../shared/LightBox";
@@ -24,17 +24,32 @@ import Comment from "./Comment/Comment";
 import useGetUser from "../../../hooks/Profile/useGetUser";
 import SellerProducts from "./SellerProducts/SellerProducts";
 import OverAllRating from "./Rating/OverAllRating";
+import SingleItemPreLoadPage from "./SingleItemPreLoadPage";
+import useGetDecodedJWTValues from "../../../hooks/Auth/useGetDecodedJWTValues";
+import InformativeModal from "../../shared/Modal/InformativeModal";
 
 export default function SingleItemPage() {
+  const [showInformativeModal, setShowInformativeModal] = useState(false);
+  const [informativeModalType, setInformativeModalType] = useState<
+    "info" | "error" | "success"
+  >("info");
+  const [informativeModalMessage, setInformativeModalMessage] = useState(
+    "You need to Register first"
+  );
+  const [informativeModalLinkMessage, setInformativeModalLinkMessage] =
+    useState("");
+
+  const [loading] = useState(true);
   const params = useParams<{ productId?: string }>();
   const product = useGetProductById(params?.productId);
   const [currentImage, setCurrentImage] = useState(1);
   const [isLightBox, setIsLightBox] = useState(false);
+  const [value, setValue] = useState("");
   const mobile = useMatchMedia(MATCHMEDIA.Mobile);
-  const userId: string = localStorage.getItem("userId") as string;
+  const { userId } = useGetDecodedJWTValues();
   const seller = useGetUser({ userId: product?.userId as string });
   const favourite = useGetFavouriteByProductIdUserId({
-    userId,
+    userId: userId ?? "",
     productId: product?._id,
   });
   const [showAdditionalInformation, setShowAdditionalInformation] =
@@ -42,8 +57,15 @@ export default function SingleItemPage() {
   const [isFavouriteOrNot, setIsFavouriteOrNot] = useState(
     favourite ? true : false
   );
-  console.log("favourite: ", favourite);
-  console.log(isFavouriteOrNot);
+  const [overAllRating, setOverAllRating] = useState(
+    product?.rating ? product.rating : 0
+  );
+
+  useEffect(() => {
+    if (product) {
+      setOverAllRating(product.rating);
+    }
+  }, [product]);
 
   useEffect(() => {
     if (favourite) {
@@ -56,39 +78,56 @@ export default function SingleItemPage() {
     }
   }, [mobile]);
 
-  if (!product) {
-    return <h2>Loading...</h2>;
+  if (!product && loading) {
+    return <SingleItemPreLoadPage />;
   }
 
   const handleRemoveOrAddFavourite = () => {
     if (isFavouriteOrNot) {
-      setIsFavouriteOrNot(false);
-      deleteFromFavourite({ userId, productId: product?._id });
+      if (userId) {
+        setIsFavouriteOrNot(false);
+        deleteFromFavourite({ userId, productId: product?._id as string });
+      }
     } else if (!isFavouriteOrNot) {
-      setIsFavouriteOrNot(true);
-      addToFavourite({ userId, productId: product?._id });
+      if (userId) {
+        setIsFavouriteOrNot(true);
+        addToFavourite({ userId, productId: product?._id as string });
+      }
     }
   };
 
-  const allImgs = [product.frontImg, ...product.imgUrls];
+  const allImgs = [
+    product?.frontImg as string,
+    ...(product?.imgUrls as string[]),
+  ];
+
+  if (!product) {
+    return <h1>Product wasn't found</h1>;
+  }
+
+  console.log("overAllRating: ", overAllRating);
+
   return (
     <>
-      <Header showPillsOrNot={false} />
+      <Header setValue={setValue} showPillsOrNot={false} />
       <div className={"bg-neutral-magnolia p-[1rem] flex flex-col gap-[1rem]"}>
         <div className="flex w-full mx-auto max-w-[1110px] items-baseline justify-between relative">
           <ul className="flex mt-[2rem] mb-[0rem] items-center gap-[1rem] ">
             <li className="px-[1rem] py-[.5rem] rounded-md text-black bg-white text-[1.8rem] font-medium w-fit">
-              {product.category}
+              {product!.category}
             </li>
             <li className="px-[1rem] py-[.5rem] rounded-md text-black bg-white text-[1.8rem] font-medium w-fit">
-              {product.subCategory}
+              {product!.subCategory}
             </li>
           </ul>
           <Rating
-            rating={product.rating}
-            productId={product._id}
-            userId={userId}
+            setShowInformativeModal={setShowInformativeModal}
+            rating={product!.rating}
+            productId={product!._id}
+            userId={userId ?? ""}
             mobile={mobile}
+            setOverAllRating={setOverAllRating}
+            setInformativeModalLinkMessage={setInformativeModalLinkMessage}
           />
         </div>
         <div className="bg-white flex flex-col gap-[2rem] rounded-lg max-w-[1110px] mx-auto p-[3rem] relative w-full">
@@ -109,6 +148,8 @@ export default function SingleItemPage() {
               variant={"icon"}
               onClick={() => {
                 handleRemoveOrAddFavourite();
+                setInformativeModalLinkMessage("Register");
+                setShowInformativeModal((prev) => !prev);
               }}
             >
               <img
@@ -126,15 +167,15 @@ export default function SingleItemPage() {
               <div className="md:grid grid-cols-4 gap-6 hidden max-w-[35rem] min-w-[20rem]">
                 <img
                   className={`col-[1/5] rounded-xl h-full object-cover w-full shadow-md shadow-neutral-dark-grayish-blue hover:scale-[1.01] cursor-pointer transition-all`}
-                  src={product.frontImg}
-                  alt={product.title}
+                  src={product!.frontImg}
+                  alt={product!.title}
                   onClick={() => setIsLightBox(true)}
                 />
                 {allImgs.map((img) => (
                   <RenderImagesLarge
                     key={img}
                     img={img}
-                    title={product.title}
+                    title={product!.title}
                     setIsLightBox={setIsLightBox}
                   />
                 ))}
@@ -181,31 +222,28 @@ export default function SingleItemPage() {
             <div className={`flex-col flex md:h-[60%] max-w-[50rem] w-full`}>
               <div>
                 <SingleItemDescription
-                  description={product.description}
-                  price={+product.price}
-                  title={product.title}
-                  brand={product.brand}
+                  description={product!.description}
+                  price={+product!.price}
+                  title={product!.title}
+                  brand={product!.brand}
                 />
                 <SingleItemAddToCart
-                  category={product.category}
-                  description={product.description}
-                  image={product.frontImg}
-                  price={+product.price}
-                  productId={params.productId as string}
-                  rating={2}
-                  title={product.title}
+                  {...product}
+                  customerId={userId}
+                  setInformativeModalMessage={setInformativeModalMessage}
+                  setInformativeModalType={setInformativeModalType}
+                  setShowInformativeModal={setShowInformativeModal}
+                  setInformativeModalLinkMessage={
+                    setInformativeModalLinkMessage
+                  }
                 />
               </div>
               {mobile && (
                 <>
                   <div className="mt-[1.5rem] flex items-center gap-[2rem] justify-between">
                     <div className="flex items-center gap-[2rem]">
-                      <ButtonHoverPromptModal
-                        contentName="Characteristics"
-                        positionByAbscissa="left"
-                        asideClasses="bottom-[-3.5rem]"
-                        className={`w-[5rem] h-[5rem] pl-[.5rem] bg-transparent shadow-md transition-all text-center`}
-                        variant={"rectangleWithShadow"}
+                      <button
+                        className={`w-[5rem] h-[5rem] pl-[.5rem] bg-transparent shadow-md transition-all text-center active:scale-[0.98]`}
                         onClick={() => {
                           if (showAdditionalInformation === "characteristics") {
                             setShowAdditionalInformation("");
@@ -219,13 +257,9 @@ export default function SingleItemPage() {
                           alt="characteristics"
                           className="w-full "
                         />
-                      </ButtonHoverPromptModal>
-                      <ButtonHoverPromptModal
-                        contentName={`More products from ${seller.username}`}
-                        positionByAbscissa="left"
-                        asideClasses="bottom-[-3.5rem]"
-                        className={`w-[5rem] h-[5rem] pl-[.5rem] bg-transparent shadow-md transition-all text-center`}
-                        variant={"rectangleWithShadow"}
+                      </button>
+                      <button
+                        className={`w-[5rem] h-[5rem] pl-[.5rem] bg-transparent shadow-md transition-all text-center active:scale-[0.98]`}
                         onClick={() => {
                           if (showAdditionalInformation === "sellerProducts") {
                             setShowAdditionalInformation("");
@@ -239,13 +273,20 @@ export default function SingleItemPage() {
                           alt="More products"
                           className="w-full "
                         />
-                      </ButtonHoverPromptModal>
+                      </button>
                     </div>
-                    <OverAllRating rating={product.rating} />
+                    <OverAllRating rating={overAllRating} />
                   </div>
                   <SingleItemCharacteristics
                     showAdditionalInformation={showAdditionalInformation}
                     productId={params.productId ? params.productId : ""}
+                  />
+                  <SellerProducts
+                    category={product!.category}
+                    subCategory={product!.subCategory}
+                    productId={product!._id}
+                    sellerId={seller._id}
+                    showAdditionalInformation={showAdditionalInformation}
                   />
                 </>
               )}
@@ -293,23 +334,29 @@ export default function SingleItemPage() {
                     <img src={owner} alt="More products" className="w-full " />
                   </ButtonHoverPromptModal>
                 </div>
-                <OverAllRating rating={product.rating} />
+                <OverAllRating rating={overAllRating} />
               </div>
               <SingleItemCharacteristics
                 showAdditionalInformation={showAdditionalInformation}
                 productId={params.productId ? params.productId : ""}
               />
               <SellerProducts
-                category={product.category}
-                subCategory={product.subCategory}
-                productId={product._id}
+                category={product!.category}
+                subCategory={product!.subCategory}
+                productId={product!._id}
                 sellerId={seller._id}
                 showAdditionalInformation={showAdditionalInformation}
               />
             </>
           )}
         </div>
-        <Comment productId={product._id} userId={userId} />
+        <Comment
+          setInformativeModalType={setInformativeModalType}
+          setShowInformativeModal={setShowInformativeModal}
+          setInformativeModalMessage={setInformativeModalMessage}
+          productId={product!._id}
+          userId={userId ?? ""}
+        />
       </div>
 
       <LightBox isLightBox={isLightBox} setIsLightBox={setIsLightBox} />
@@ -318,6 +365,20 @@ export default function SingleItemPage() {
         imgs={allImgs}
         isLightBox={isLightBox}
         setIsLightBox={setIsLightBox}
+      />
+
+      <InformativeModal
+        closeOnClick={true}
+        duration={1500}
+        appearsFrom="bottom"
+        positionX="right-[1rem]"
+        positionY="bottom-[1rem]"
+        type={informativeModalType}
+        message={informativeModalMessage}
+        setShowInformativeModal={setShowInformativeModal}
+        showInformativeModal={showInformativeModal}
+        linkMessage={informativeModalLinkMessage}
+        linkPath="/auth"
       />
     </>
   );

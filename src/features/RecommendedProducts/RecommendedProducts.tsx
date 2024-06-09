@@ -8,9 +8,10 @@ import RecommendedRightSide from "./RecommendedRightSide/RecommendedRightSide";
 import RecommendedShowCategories from "./RecommendedUpperParts/RecommendedShowCategories";
 import { getRecommendedSellerProductsAmount } from "./recommendedQueries";
 import { RecommendedProductsAmountTypes } from "../../types/RecommendedProducts";
-import { getRecommendedSellerProducts } from "../Shop/SingleItemPage/SellerProducts/recommendedProductsQueries";
 import { Link } from "react-router-dom";
 import home from "../../assets/images/shared/home.png";
+import { getRecommendedProducts } from "../../api/queries/recommendedQueries";
+import useGetDecodedJWTValues from "../../hooks/Auth/useGetDecodedJWTValues";
 
 export default function RecommendedProducts() {
   const [value, setValue] = useState("");
@@ -18,7 +19,7 @@ export default function RecommendedProducts() {
   const debouncedValue = useDebounce({ value, delay: 500 });
   const [currentProductId, setCurrentProductId] = useState("");
   const [carouselProductIds, setCarouselProductIds] = useState<string[]>([]);
-  const userId: string = localStorage.getItem("userId") as string;
+  const { userId } = useGetDecodedJWTValues();
   const [productAmount, setProductAmount] =
     useState<RecommendedProductsAmountTypes | null>(null);
 
@@ -31,7 +32,6 @@ export default function RecommendedProducts() {
       getRecommendedSellerProductsAmount({ productId: currentProductId })
         .then((r) => {
           if (r) {
-            console.log(r);
             setProductAmount(r);
             return r;
           } else {
@@ -49,7 +49,7 @@ export default function RecommendedProducts() {
   }, [currentProductId]);
 
   useEffect(() => {
-    getRecommendedSellerProducts({ productId: currentProductId }).then((r) => {
+    getRecommendedProducts({ productId: currentProductId }).then((r) => {
       if (r) {
         setCarouselProductIds(() => {
           return r.map((r) => r.recommendedProductId);
@@ -85,7 +85,7 @@ export default function RecommendedProducts() {
         />
         <RecommendedRightSide
           setCurrentProductId={setCurrentProductId}
-          userId={userId}
+          userId={userId ?? ""}
           productAmount={amount}
           debouncedValue={debouncedValue}
           currentProductId={currentProductId}
